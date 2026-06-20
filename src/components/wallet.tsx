@@ -1,12 +1,14 @@
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WavyTabBar from './navbar';
 
 interface WalletScreenProps {
-  onNavigateToFinancialManager: () => void;
+    onNavigateToFinancialManager: () => void;
+    onNavigateToAnalysis?: () => void;
+    onNavigateToOther?: () => void;
 }
 
-export default function WalletScreen({ onNavigateToFinancialManager }: WalletScreenProps) {
+export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther }: WalletScreenProps) {
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
@@ -49,7 +51,7 @@ export default function WalletScreen({ onNavigateToFinancialManager }: WalletScr
                         <Text style={styles.largeCardText}>Lịch sử giao dịch</Text>
                     </View>
                     {/* Chỗ này mày chèn ảnh cá mập cầm kính lúp nha */}
-                    <View style={styles.mascotPlaceholder} />
+                    <Image source={require('@/assets/images/shark-thinking.png')} style={styles.mascotImage} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.largeCard}>
@@ -58,7 +60,7 @@ export default function WalletScreen({ onNavigateToFinancialManager }: WalletScr
                         <Text style={styles.largeCardText}>QR Thanh toán</Text>
                     </View>
                     {/* Chỗ này mày chèn ảnh cá mập đeo kính râm */}
-                    <View style={styles.mascotPlaceholder} />
+                    <Image source={require('@/assets/images/shark-tie.png')} style={styles.mascotImage} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.largeCard} onPress={onNavigateToFinancialManager}>
@@ -67,7 +69,7 @@ export default function WalletScreen({ onNavigateToFinancialManager }: WalletScr
                         <Text style={styles.largeCardText}>Quản lí tài chính</Text>
                     </View>
                     {/* Chỗ này mày chèn ảnh cá mập mặc vest */}
-                    <View style={styles.mascotPlaceholder} />
+                    <Image source={require('@/assets/images/shark-vest.png')} style={styles.mascotImage} />
                 </TouchableOpacity>
 
                 {/* Bottom Grid Actions */}
@@ -98,7 +100,11 @@ export default function WalletScreen({ onNavigateToFinancialManager }: WalletScr
             </ScrollView>
 
             {/* Bottom Navigation */}
-            <WavyTabBar />
+            <WavyTabBar 
+                activeTabProp="Wallet"
+                onNavigateToAnalysis={onNavigateToAnalysis} 
+                onNavigateToOther={onNavigateToOther}
+            />
         </SafeAreaView>
     );
 }
@@ -194,58 +200,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
     },
-    mascotPlaceholder: {
+    mascotImage: {
         width: 90,
         height: 90,
-        backgroundColor: '#4ba096', // Màu tạm để thấy chỗ chèn ảnh
-        borderTopLeftRadius: 45,
-        borderBottomLeftRadius: 45,
-    },
-    // Giả lập Bottom Navigation
-    bottomNavContainer: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        paddingHorizontal: 10,
-        paddingBottom: 20,
-    },
-    bottomNavBackground: {
-        backgroundColor: '#278b97',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'flex-end',
-        height: 70,
-        borderRadius: 35,
-        paddingHorizontal: 10,
-    },
-    navItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 10,
-    },
-    activeNavItem: {
-        marginBottom: 20, // Đẩy nút giữa lên cao hơn
-    },
-    navLabel: {
-        color: '#fff',
-        fontSize: 10,
-        marginBottom: 4,
-    },
-    navIconCircle: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: '#4ba096',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    activeNavIconCircle: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: '#f6d3c5', // Màu da cam nhạt chỗ nút Ví
-        justifyContent: 'center',
-        alignItems: 'center',
+        resizeMode: 'contain',
     },
 });

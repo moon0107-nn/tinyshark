@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
@@ -55,11 +56,63 @@ const describeArc = (x: number, y: number, radius: number, startAngle: number, e
   ].join(' ');
 };
 
+// Thành phần Biểu đồ hình tròn SVG thủ công
+const SpendPieChart = ({ categories }: { categories: SpendCategory[] }) => {
+  const size = 180;
+  const center = size / 2;
+  const radius = 70;
+  const strokeWidth = 15;
+
+  const renderPieSlices = () => {
+    let currentAngle = 0;
+    return categories.map((cat: SpendCategory, i: number) => {
+      const sliceAngle = cat.percentage * 3.6; // 360 / 100
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + sliceAngle;
+      currentAngle += sliceAngle;
+      const d = describeArc(center, center, radius, startAngle, endAngle);
+      return <Path key={i} d={d} fill="none" stroke={cat.color} strokeWidth={strokeWidth} />;
+    });
+  };
+
+  const renderPieIcons = () => {
+    let currentAngle = 0;
+    return categories.map((cat: SpendCategory, i: number) => {
+      const sliceAngle = cat.percentage * 3.6;
+      const midAngle = currentAngle + sliceAngle / 2;
+      currentAngle += sliceAngle;
+      const rad = (midAngle - 90) * Math.PI / 180;
+      const x = center + radius * Math.cos(rad);
+      const y = center + radius * Math.sin(rad);
+
+      const iconBgSize = 24;
+      const iconColor = cat.icon === 'local-dining' ? '#FFECB3' : '#FFCC80';
+      return (
+        <G key={i}>
+          <Circle cx={x} cy={y} r={iconBgSize / 2 + 2} fill={iconColor} stroke="#FFFFFF" strokeWidth="2" />
+          <SvgText x={x} y={y + 3} textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="bold">
+            {cat.icon === 'local-dining' ? '🍩' : '💪'}
+          </SvgText>
+        </G>
+      );
+    });
+  };
+
+  return (
+    <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
+      <Circle cx={center} cy={center} r={radius} stroke={colors.pieBorder} strokeWidth={strokeWidth} fill="none" />
+      {renderPieSlices()}
+      {renderPieIcons()}
+    </Svg>
+  );
+};
+
 interface FinancialManagerProps {
   onBack: () => void;
+  onNavigateToCreateWallet: () => void;
 }
 
-const FinancialManagerScreen = ({ onBack }: FinancialManagerProps) => {
+const FinancialManagerScreen = ({ onBack, onNavigateToCreateWallet }: FinancialManagerProps) => {
   return (
     <SafeAreaView style={styles.container} edges={['right', 'left']}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.bg} />
@@ -92,10 +145,14 @@ const FinancialManagerScreen = ({ onBack }: FinancialManagerProps) => {
             <Text style={styles.walletBalance}>{walletData.balance}</Text>
           </View>
           {/* Thêm ví mới */}
-          <View style={[styles.walletCard, styles.addWalletCard]}>
+          <TouchableOpacity
+            style={[styles.walletCard, styles.addWalletCard]}
+            onPress={onNavigateToCreateWallet}
+            activeOpacity={0.7}
+          >
             <Icon name="plus" size={32} color={colors.subText} />
             <Text style={styles.addWalletText}>Thêm ví mới</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Time Filter */}
@@ -162,58 +219,6 @@ const FinancialManagerScreen = ({ onBack }: FinancialManagerProps) => {
   );
 };
 
-// Thành phần Biểu đồ hình tròn SVG thủ công
-const SpendPieChart = ({ categories }: { categories: SpendCategory[] }) => {
-  const size = 180;
-  const center = size / 2;
-  const radius = 70;
-  const strokeWidth = 15;
-  const innerRadius = radius - strokeWidth / 2;
-
-  const renderPieSlices = () => {
-    let currentAngle = 0;
-    return categories.map((cat: SpendCategory, i: number) => {
-      const sliceAngle = cat.percentage * 3.6; // 360 / 100
-      const startAngle = currentAngle;
-      const endAngle = currentAngle + sliceAngle;
-      currentAngle += sliceAngle;
-      const d = describeArc(center, center, radius, startAngle, endAngle);
-      return <Path key={i} d={d} fill="none" stroke={cat.color} strokeWidth={strokeWidth} />;
-    });
-  };
-
-  const renderPieIcons = () => {
-    let currentAngle = 0;
-    return categories.map((cat: SpendCategory, i: number) => {
-      const sliceAngle = cat.percentage * 3.6;
-      const midAngle = currentAngle + sliceAngle / 2;
-      currentAngle += sliceAngle;
-      const rad = (midAngle - 90) * Math.PI / 180;
-      const x = center + radius * Math.cos(rad);
-      const y = center + radius * Math.sin(rad);
-
-      // Icon SVG hoặc ảnh tùy chỉnh, tạm thời dùng emoji đại diện trong hình tròn
-      const iconBgSize = 24;
-      const iconColor = cat.icon === 'local-dining' ? '#FFECB3' : '#FFCC80';
-      return (
-        <G key={i}>
-          <Circle cx={x} cy={y} r={iconBgSize / 2 + 2} fill={iconColor} stroke="#FFFFFF" strokeWidth="2" />
-          <SvgText x={x} y={y + 3} textAnchor="middle" fill="#FFFFFF" fontSize="12" fontWeight="bold">
-            {cat.icon === 'local-dining' ? '🍩' : '💪'}
-          </SvgText>
-        </G>
-      );
-    });
-  };
-
-  return (
-    <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
-      <Circle cx={center} cy={center} r={radius} stroke={colors.pieBorder} strokeWidth={strokeWidth} fill="none" />
-      {renderPieSlices()}
-      {renderPieIcons()}
-    </Svg>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

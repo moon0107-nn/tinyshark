@@ -1,101 +1,79 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// Chia màn hình làm 4 phần cho 4 tabs
-const TAB_WIDTH = SCREEN_WIDTH / 4;
-const BAR_HEIGHT = 110; // Chiều cao tổng thể của thanh navigation
+interface WavyTabBarProps {
+    onNavigateToHome?: () => void;
+    onNavigateToWallet?: () => void;
+    onNavigateToAnalysis?: () => void;
+    onNavigateToOther?: () => void;
+    activeTabProp?: 'Home' | 'Wallet' | 'Analyst' | 'Other';
+}
 
-export default function WavyTabBar() {
-    const [activeTab, setActiveTab] = useState('Wallet');
-
-    // Vẽ đường cong lượn sóng ôm trọn 4 nút tròn
-    // Sử dụng Cubic Bezier Curves (C) để tạo các điểm uốn mượt mà
-    const createSvgPath = () => {
-        const h = BAR_HEIGHT;
-        const w = SCREEN_WIDTH;
-
-        // Điểm bắt đầu ở góc dưới bên trái, đi lên rồi uốn lượn qua 4 đỉnh
-        return `
-      M 0,${h} 
-      L 0,50 
-      C ${TAB_WIDTH * 0.1},25 ${TAB_WIDTH * 0.4},25 ${TAB_WIDTH * 0.5},25
-      C ${TAB_WIDTH * 0.6},25 ${TAB_WIDTH * 0.9},25 ${TAB_WIDTH},50
-      
-      C ${TAB_WIDTH * 1.1},75 ${TAB_WIDTH * 1.4},75 ${TAB_WIDTH * 1.5},50
-      C ${TAB_WIDTH * 1.6},25 ${TAB_WIDTH * 1.9},25 ${TAB_WIDTH * 2},25
-      
-      C ${TAB_WIDTH * 2.1},25 ${TAB_WIDTH * 2.4},25 ${TAB_WIDTH * 2.5},50
-      C ${TAB_WIDTH * 2.6},75 ${TAB_WIDTH * 2.9},75 ${TAB_WIDTH * 3},50
-      
-      C ${TAB_WIDTH * 3.1},25 ${TAB_WIDTH * 3.4},25 ${TAB_WIDTH * 3.5},25
-      C ${TAB_WIDTH * 3.6},25 ${TAB_WIDTH * 3.9},25 ${w},50
-      L w,${h} 
-      Z
-    `;
-    };
-
-    // Hàm này tao vẽ đường cong chuẩn xác dựa trên hình dáng lượn sóng thực tế của ảnh mày đưa
-    const generateLiquidPath = () => {
-        const w = SCREEN_WIDTH;
-        // Điểm uốn xuống giữa các tab tạo hiệu ứng liên kết mượt mà
-        return `
-      M 0,110 
-      L 0,50
-      Q ${TAB_WIDTH * 0.5}, -5 ${TAB_WIDTH}, 50
-      T ${TAB_WIDTH * 2}, 50
-      T ${TAB_WIDTH * 3}, 50
-      T ${w}, 50
-      L ${w}, 110
-      Z
-    `;
-    };
-
-    const tabs = [
-        { id: 'Home', label: 'Home', icon: null }, // Mày thay require('./xxx.png') vào đây
-        { id: 'Wallet', label: 'Wallet', icon: null },
-        { id: 'Analyst', label: 'Analyst', icon: null },
-        { id: 'Other', label: 'Other', icon: null },
-    ];
-
+export default function WavyTabBar({ 
+    onNavigateToHome, 
+    onNavigateToWallet, 
+    onNavigateToAnalysis, 
+    onNavigateToOther, 
+    activeTabProp = 'Wallet' 
+}: WavyTabBarProps) {
     return (
         <View style={styles.bottomNavContainer}>
             <View style={styles.bottomNavBackground}>
-                <TouchableOpacity style={styles.navItem}>
+                
+                {/* Home */}
+                <TouchableOpacity 
+                    style={[styles.navItem, activeTabProp === 'Home' && styles.activeNavItem]} 
+                    onPress={onNavigateToHome}
+                    activeOpacity={0.8}
+                >
                     <Text style={styles.navLabel}>Home</Text>
-                    <View style={styles.navIconCircle}>
-                        <Feather name="home" size={20} color="#fff" />
+                    <View style={activeTabProp === 'Home' ? styles.activeNavIconCircle : styles.navIconCircle}>
+                        <Feather name="home" size={activeTabProp === 'Home' ? 24 : 20} color={activeTabProp === 'Home' ? "#112d32" : "#fff"} />
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={[styles.navItem, styles.activeNavItem]}>
+                {/* Wallet */}
+                <TouchableOpacity 
+                    style={[styles.navItem, activeTabProp === 'Wallet' && styles.activeNavItem]} 
+                    onPress={onNavigateToWallet}
+                    activeOpacity={0.8}
+                >
                     <Text style={styles.navLabel}>Wallet</Text>
-                    <View style={styles.activeNavIconCircle}>
-                        <MaterialCommunityIcons name="wallet-outline" size={24} color="#112d32" />
+                    <View style={activeTabProp === 'Wallet' ? styles.activeNavIconCircle : styles.navIconCircle}>
+                        <MaterialCommunityIcons name="wallet-outline" size={activeTabProp === 'Wallet' ? 24 : 20} color={activeTabProp === 'Wallet' ? "#112d32" : "#fff"} />
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.navItem}>
+                {/* Analyst */}
+                <TouchableOpacity 
+                    style={[styles.navItem, activeTabProp === 'Analyst' && styles.activeNavItem]} 
+                    onPress={onNavigateToAnalysis}
+                    activeOpacity={0.8}
+                >
                     <Text style={styles.navLabel}>Analyst</Text>
-                    <View style={styles.navIconCircle}>
-                        <Ionicons name="stats-chart" size={20} color="#fff" />
+                    <View style={activeTabProp === 'Analyst' ? styles.activeNavIconCircle : styles.navIconCircle}>
+                        <Ionicons name="stats-chart" size={activeTabProp === 'Analyst' ? 24 : 20} color={activeTabProp === 'Analyst' ? "#112d32" : "#fff"} />
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.navItem}>
+                {/* Other */}
+                <TouchableOpacity 
+                    style={[styles.navItem, activeTabProp === 'Other' && styles.activeNavItem]} 
+                    onPress={onNavigateToOther}
+                    activeOpacity={0.8}
+                >
                     <Text style={styles.navLabel}>Other</Text>
-                    <View style={styles.navIconCircle}>
-                        <Feather name="more-horizontal" size={20} color="#fff" />
+                    <View style={activeTabProp === 'Other' ? styles.activeNavIconCircle : styles.navIconCircle}>
+                        <Feather name="more-horizontal" size={activeTabProp === 'Other' ? 24 : 20} color={activeTabProp === 'Other' ? "#112d32" : "#fff"} />
                     </View>
                 </TouchableOpacity>
+
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    // Giả lập Bottom Navigation
     bottomNavContainer: {
         position: 'absolute',
         bottom: 0,
@@ -118,7 +96,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     activeNavItem: {
-        marginBottom: 20, // Đẩy nút giữa lên cao hơn
+        marginBottom: 20,
     },
     navLabel: {
         color: '#fff',
@@ -138,7 +116,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: '#f6d3c5', // Màu da cam nhạt chỗ nút Ví
+        backgroundColor: '#f6d3c5',
         justifyContent: 'center',
         alignItems: 'center',
     },
