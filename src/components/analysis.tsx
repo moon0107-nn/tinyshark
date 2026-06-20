@@ -1,20 +1,53 @@
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import WavyTabBar from './navbar';
 
 const { width } = Dimensions.get('window');
 
 interface AnalysisScreenProps {
     onNavigateToWallet?: () => void;
+    onNavigateToOther?: () => void;
 }
 
-export default function AnalysisScreen({ onNavigateToWallet }: AnalysisScreenProps) {
+type TabType = 'Tuần' | 'Tháng' | 'Năm';
+
+// 1. Định nghĩa dữ liệu mẫu cho từng Tab
+const chartDataMock = {
+    'Tuần': {
+        title: 'Cuối tuần trước',
+        subtitle: '+ 1.204.008đ (2%)',
+        valueLabel: '505.204đ',
+        xAxis: ['12/12', '13/12', '14/12', '15/12', '16/12', '17/12']
+    },
+    'Tháng': {
+        title: 'Tháng này so với tháng trước',
+        subtitle: '+ 5.450.000đ (12%)',
+        valueLabel: '4.120.000đ',
+        xAxis: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4']
+    },
+    'Năm': {
+        title: 'Năm nay so với năm trước',
+        subtitle: '+ 45.800.000đ (25%)',
+        valueLabel: '17.070.206đ',
+        xAxis: ['Q1', 'Q2', 'Q3', 'Q4']
+    }
+};
+
+export default function AnalysisScreen({ onNavigateToWallet, onNavigateToOther }: AnalysisScreenProps) {
+    const [activeTab, setActiveTab] = useState<TabType>('Tuần');
+    const tabs: TabType[] = ['Tuần', 'Tháng', 'Năm'];
+
+    // 2. Lấy dữ liệu của tab hiện tại để hiển thị
+    const currentChartData = chartDataMock[activeTab];
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
 
                 {/* Header */}
                 <View style={styles.header}>
-                    <View style={{ width: 24 }} /> {/* Spacer */}
+                    <View style={{ width: 24 }} />
                     <Text style={styles.headerTitle}>Báo Cáo</Text>
                     <TouchableOpacity>
                         <Ionicons name="search" size={24} color="black" />
@@ -55,41 +88,47 @@ export default function AnalysisScreen({ onNavigateToWallet }: AnalysisScreenPro
 
                 {/* Tab Lọc Thời Gian */}
                 <View style={styles.tabContainer}>
-                    <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-                        <Text style={styles.activeTabText}>Tuần</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.tab}>
-                        <Text style={styles.tabText}>Tháng</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.tab}>
-                        <Text style={styles.tabText}>Năm</Text>
-                    </TouchableOpacity>
+                    {tabs.map((tab) => {
+                        const isActive = activeTab === tab;
+                        return (
+                            <TouchableOpacity
+                                key={tab}
+                                style={[styles.tab, isActive && styles.activeTab]}
+                                onPress={() => setActiveTab(tab)}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={isActive ? styles.activeTabText : styles.tabText}>
+                                    {tab}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
 
-                {/* Phần Biểu Đồ */}
+                {/* Phần Biểu Đồ - Đã đổ dữ liệu động theo Tab */}
                 <View style={styles.chartCard}>
-                    <Text style={styles.chartTitle}>Cuối tuần trước</Text>
-                    <Text style={styles.chartSubtitle}>+ 1.204.008đ (2%)</Text>
+                    <Text style={styles.chartTitle}>{currentChartData.title}</Text>
+                    <Text style={styles.chartSubtitle}>{currentChartData.subtitle}</Text>
 
                     {/* Mô phỏng biểu đồ lượn sóng */}
                     <View style={styles.chartArea}>
                         <View style={styles.chartMarker}>
-                            <Text style={styles.chartValueLabel}>505.204đ</Text>
-                            <Text style={styles.fishIcon}>🐟</Text>
+                            <Text style={styles.chartValueLabel}>{currentChartData.valueLabel}</Text>
+                            <Image source={require('@/assets/images/big-shark.png')} style={styles.sharkImage} />
                         </View>
                         {/* Đường nét đứt mô phỏng */}
                         <View style={styles.dashedLineContainer}>
                             <View style={styles.dashedLine} />
                         </View>
 
-                        {/* Đường sóng mô phỏng (Trong thực tế nên dùng react-native-svg) */}
+                        {/* Đường sóng mô phỏng */}
                         <View style={styles.waveMockup} />
                     </View>
 
                     {/* Trục X */}
                     <View style={styles.xAxis}>
-                        {['12/12', '13/12', '14/12', '15/12', '16/12', '17/12'].map((date, index) => (
-                            <Text style={styles.xAxisLabel} key={index}>{date}</Text>
+                        {currentChartData.xAxis.map((label, index) => (
+                            <Text style={styles.xAxisLabel} key={index}>{label}</Text>
                         ))}
                     </View>
                 </View>
@@ -109,29 +148,11 @@ export default function AnalysisScreen({ onNavigateToWallet }: AnalysisScreenPro
             </ScrollView>
 
             {/* Thanh Điều Hướng (Bottom Navigation) */}
-            <View style={styles.bottomNav}>
-                <TouchableOpacity style={styles.navItem}>
-                    <Ionicons name="home-outline" size={24} color="#A1D6D4" />
-                    <Text style={styles.navText}>Home</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.navItem} onPress={onNavigateToWallet}>
-                    <Ionicons name="wallet-outline" size={24} color="#A1D6D4" />
-                    <Text style={styles.navText}>Wallet</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.navItem}>
-                    <View style={styles.activeNavCircle}>
-                        <FontAwesome5 name="chart-bar" size={20} color="#2A8B9D" />
-                    </View>
-                    <Text style={[styles.navText, { color: 'white', marginTop: 4 }]}>Analyst</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.navItem}>
-                    <FontAwesome5 name="fish" size={22} color="#A1D6D4" />
-                    <Text style={styles.navText}>Other</Text>
-                </TouchableOpacity>
-            </View>
+            <WavyTabBar 
+                activeTabProp="Analyst"
+                onNavigateToWallet={onNavigateToWallet}
+                onNavigateToOther={onNavigateToOther}
+            />
         </SafeAreaView>
     );
 }
@@ -139,7 +160,7 @@ export default function AnalysisScreen({ onNavigateToWallet }: AnalysisScreenPro
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#D1EFEF', // Màu nền tổng thể lượn sóng nhạt
+        backgroundColor: '#D1EFEF',
     },
     scrollContent: {
         paddingHorizontal: 20,
@@ -184,7 +205,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     innerBox: {
-        backgroundColor: '#82D1C5', // Màu nhạt hơn chút cho box nhỏ
+        backgroundColor: '#82D1C5',
         borderRadius: 12,
         padding: 12,
         width: '48%',
@@ -285,7 +306,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 2,
         backgroundColor: '#3B98E7',
-        // Trong thực tế, hãy thay cái này bằng SVG Path để tạo độ uốn lượn
     },
     xAxis: {
         flexDirection: 'row',
@@ -315,38 +335,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '500',
     },
-    bottomNav: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: '#2A8B9D',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: 15,
-        paddingBottom: 25,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+    sharkImage: {
+        width: 150,
+        height: 150,
+        resizeMode: 'contain',
     },
-    navItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    navText: {
-        color: '#A1D6D4',
-        fontSize: 10,
-        marginTop: 4,
-        fontWeight: 'bold',
-    },
-    activeNavCircle: {
-        backgroundColor: '#F8E0D5', // Màu da/hồng nhạt
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: -20, // Đẩy lên để lồi ra ngoài thanh điều hướng
-        borderWidth: 4,
-        borderColor: '#2A8B9D',
-    }
 });
