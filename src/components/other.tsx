@@ -1,4 +1,4 @@
-import { AntDesign, Feather, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WavyTabBar from './navbar';
 
@@ -32,13 +32,21 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
     ];
 
     // 3. Mảng danh sách cài đặt phía dưới
-    const settingsList = [
-        { id: '1', title: 'Cài đặt chung', icon: <Ionicons name="settings-outline" size={22} color="#4A9B99" /> },
-        { id: '2', title: 'Cài đặt dữ liệu', icon: <MaterialCommunityIcons name="database-outline" size={22} color="#4A9B99" /> },
-        { id: '3', title: 'Giới thiệu cho bạn', icon: <Ionicons name="arrow-undo-outline" size={22} color="#4A9B99" /> },
-        { id: '4', title: 'Bạn thích ứng dụng này?', subtitle: 'Đánh giá chúng tôi 5 sao trên Apple Store nhé!', icon: <AntDesign name={'staro' as any} size={22} color="#4A9B99" /> },
-        { id: '5', title: 'Góp ý với nhà phát triển', icon: <Feather name="mail" size={22} color="#4A9B99" /> },
-        { id: '6', title: 'Trợ giúp & thông tin', icon: <Ionicons name="information-circle-outline" size={22} color="#4A9B99" /> },
+    // Thêm interface này trước return
+    type SettingItem = {
+        id: string;
+        title: string;
+        subtitle?: string;   // ← dấu ? = optional
+        icon: any;
+    };
+
+    const settingsList: SettingItem[] = [
+        { id: '1', title: 'Cài đặt chung', icon: require('@/assets/images/otherIcons/caidatchung-icon.png') },
+        { id: '2', title: 'Cài đặt dữ liệu', icon: require('@/assets/images/otherIcons/caidatdulieu-icon.png') },
+        { id: '3', title: 'Giới thiệu cho bạn', icon: require('@/assets/images/otherIcons/chiasechoban-icon.png') },
+        { id: '4', title: 'Bạn thích ứng dụng này?', icon: require('@/assets/images/otherIcons/danhgia-icon.png') },
+        { id: '5', title: 'Góp ý với nhà phát triển', icon: require('@/assets/images/otherIcons/gopyvoinhaphattrien-icon.png') },
+        { id: '6', title: 'Trợ giúp & thông tin', icon: require('@/assets/images/otherIcons/trogiupvathongtin-icon.png') },
     ];
 
     return (
@@ -115,7 +123,9 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                 <View style={styles.settingsContainer}>
                     {settingsList.map((item) => (
                         <TouchableOpacity key={item.id} style={styles.settingRow} activeOpacity={0.7}>
-                            <View style={styles.settingIconWrapper}>{item.icon}</View>
+                            <View style={styles.settingIconWrapper}>
+                                <Image source={item.icon} style={styles.settingIcon} />  {/* ← ĐÃ SỬA */}
+                            </View>
                             <View style={styles.settingTextWrapper}>
                                 <Text style={styles.settingTitleText}>{item.title}</Text>
                                 {item.subtitle && <Text style={styles.settingSubtitleText}>{item.subtitle}</Text>}
@@ -126,7 +136,10 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
 
                 {/* Nút Đồng bộ dữ liệu */}
                 <TouchableOpacity style={styles.syncButton} activeOpacity={0.8}>
-                    <Ionicons name="refresh-outline" size={18} color="#2A8B9D" />
+                    <Image
+                        source={require('@/assets/images/otherIcons/dongbo-icon.png')}
+                        style={styles.syncIcon}
+                    />
                     <Text style={styles.syncButtonText}>Đồng bộ dữ liệu</Text>
                 </TouchableOpacity>
                 <Text style={styles.syncTimeText}>Đồng bộ lần cuối lúc 18/12/2025 02:09:44</Text>
@@ -319,5 +332,16 @@ const styles = StyleSheet.create({
         color: '#9EA1A2',
         fontStyle: 'italic',
         marginTop: 8,
+    },
+    settingIcon: {
+        width: 24,
+        height: 24,
+        resizeMode: 'contain',
+    },
+    syncIcon: {
+        width: 18,
+        height: 18,
+        resizeMode: 'contain',
+        marginRight: 6,
     },
 });
