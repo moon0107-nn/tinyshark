@@ -1,17 +1,17 @@
-import 'react-native-gesture-handler';
-import { DarkTheme, DefaultTheme, ThemeProvider, Slot } from 'expo-router';
+import { DarkTheme, DefaultTheme, Slot, ThemeProvider } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, useColorScheme, View } from 'react-native';
+import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import WalletScreen from '@/components/wallet';
-import FinancialManagerScreen from '@/components/financial-manager';
-import CreateAccountScreen from '@/components/create-wallet';
-import { OnboardingScreen } from '@/components/onboarding-screen';
-import { LoginScreen } from '@/components/login-screen';
 import AnalysisScreen from '@/components/analysis';
+import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import CreateAccountScreen from '@/components/create-wallet';
+import FinancialManagerScreen from '@/components/financial-manager';
+import { LoginScreen } from '@/components/login-screen';
+import { OnboardingScreen } from '@/components/onboarding-screen';
 import OtherScreen from '@/components/other';
+import WalletScreen from '@/components/wallet';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -26,23 +26,23 @@ export default function TabLayout() {
         <View style={{ display: 'none' }}>
           <Slot />
         </View>
-        
+
         {isLoggedIn ? (
           currentScreen === 'wallet' ? (
-            <WalletScreen 
-              onNavigateToFinancialManager={() => setCurrentScreen('financial-manager')} 
+            <WalletScreen
+              onNavigateToFinancialManager={() => setCurrentScreen('financial-manager')}
               onNavigateToAnalysis={() => setCurrentScreen('analysis')}
               onNavigateToOther={() => setCurrentScreen('other')}
             />
           ) : currentScreen === 'analysis' ? (
-            <AnalysisScreen 
-              onNavigateToWallet={() => setCurrentScreen('wallet')} 
-              onNavigateToOther={() => setCurrentScreen('other')} 
+            <AnalysisScreen
+              onNavigateToWallet={() => setCurrentScreen('wallet')}
+              onNavigateToOther={() => setCurrentScreen('other')}
             />
           ) : currentScreen === 'other' ? (
-            <OtherScreen 
-              onNavigateToWallet={() => setCurrentScreen('wallet')} 
-              onNavigateToAnalyst={() => setCurrentScreen('analysis')} 
+            <OtherScreen
+              onNavigateToWallet={() => setCurrentScreen('wallet')}
+              onNavigateToAnalyst={() => setCurrentScreen('analysis')}
             />
           ) : currentScreen === 'financial-manager' ? (
             <FinancialManagerScreen
