@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useCallback, useEffect, useState } from 'react';
-import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -398,6 +398,23 @@ const styles = StyleSheet.create({
   overlay: {
     zIndex: 999,
     backgroundColor: '#08304d',
+  },
+  skipBtn: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 50 : 35,
+    right: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1.2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    zIndex: 1000,
+  },
+  skipText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   bottomVignette: {
     position: 'absolute',
