@@ -4,20 +4,15 @@ import { StyleSheet, useColorScheme, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import AnalysisScreen from '@/components/analysis';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import CreateAccountScreen from '@/components/create-wallet';
-import FinancialManagerScreen from '@/components/financial-manager';
+import AppTabs from '@/components/app-tabs';
 import { LoginScreen } from '@/components/login-screen';
 import { OnboardingScreen } from '@/components/onboarding-screen';
-import OtherScreen from '@/components/other';
-import WalletScreen from '@/components/wallet';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const [onboardingDone, setOnboardingDone] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentScreen, setCurrentScreen] = useState<'wallet' | 'financial-manager' | 'create-wallet' | 'analysis' | 'other'>('wallet');
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -28,30 +23,7 @@ export default function TabLayout() {
         </View>
 
         {isLoggedIn ? (
-          currentScreen === 'wallet' ? (
-            <WalletScreen
-              onNavigateToFinancialManager={() => setCurrentScreen('financial-manager')}
-              onNavigateToAnalysis={() => setCurrentScreen('analysis')}
-              onNavigateToOther={() => setCurrentScreen('other')}
-            />
-          ) : currentScreen === 'analysis' ? (
-            <AnalysisScreen
-              onNavigateToWallet={() => setCurrentScreen('wallet')}
-              onNavigateToOther={() => setCurrentScreen('other')}
-            />
-          ) : currentScreen === 'other' ? (
-            <OtherScreen
-              onNavigateToWallet={() => setCurrentScreen('wallet')}
-              onNavigateToAnalyst={() => setCurrentScreen('analysis')}
-            />
-          ) : currentScreen === 'financial-manager' ? (
-            <FinancialManagerScreen
-              onBack={() => setCurrentScreen('wallet')}
-              onNavigateToCreateWallet={() => setCurrentScreen('create-wallet')}
-            />
-          ) : (
-            <CreateAccountScreen onBack={() => setCurrentScreen('financial-manager')} />
-          )
+          <AppTabs />
         ) : onboardingDone ? (
           <LoginScreen onLogin={() => setIsLoggedIn(true)} />
         ) : (
