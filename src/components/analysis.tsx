@@ -150,8 +150,6 @@ export default function AnalysisScreen({ onNavigateToWallet, onNavigateToOther }
             {/* Thanh Điều Hướng (Bottom Navigation) */}
             <WavyTabBar 
                 activeTabProp="Analyst"
-                onNavigateToWallet={onNavigateToWallet}
-                onNavigateToOther={onNavigateToOther}
             />
         </SafeAreaView>
     );

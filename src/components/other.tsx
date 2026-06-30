@@ -55,7 +55,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
 
-                {/* Profile Header */}
                 <View style={styles.profileContainer}>
                     <Image
                         source={{ uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80' }}
@@ -64,14 +63,12 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     <Text style={styles.profileName}>Quang Minh</Text>
                 </View>
 
-                {/* Nút nâng cấp Premium */}
                 <TouchableOpacity style={styles.premiumButton} activeOpacity={0.9}>
                     <Text style={styles.premiumText}>
                         Năng cấp <Text style={styles.premiumHighlight}>Premium ⭐️</Text>
                     </Text>
                 </TouchableOpacity>
 
-                {/* Xu và Mã chia sẻ */}
                 <View style={styles.rowInfo}>
                     <View style={styles.infoBox}>
                         <FontAwesome5 name="coins" size={16} color="#E5A93C" />
@@ -85,7 +82,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     </TouchableOpacity>
                 </View>
 
-                {/* Khối Tính Năng */}
                 <View style={styles.sectionCard}>
                     <Text style={styles.sectionTitle}>Tính năng</Text>
                     <View style={styles.gridContainer}>
@@ -119,12 +115,11 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     </View>
                 </View>
 
-                {/* Danh sách cài đặt chi tiết */}
                 <View style={styles.settingsContainer}>
                     {settingsList.map((item) => (
                         <TouchableOpacity key={item.id} style={styles.settingRow} activeOpacity={0.7}>
                             <View style={styles.settingIconWrapper}>
-                                <Image source={item.icon} style={styles.settingIcon} />  {/* ← ĐÃ SỬA */}
+                                <Image source={item.icon} style={styles.settingIcon} />
                             </View>
                             <View style={styles.settingTextWrapper}>
                                 <Text style={styles.settingTitleText}>{item.title}</Text>
@@ -134,7 +129,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     ))}
                 </View>
 
-                {/* Nút Đồng bộ dữ liệu */}
                 <TouchableOpacity style={styles.syncButton} activeOpacity={0.8}>
                     <Image
                         source={require('@/assets/images/otherIcons/dongbo-icon.png')}
@@ -146,12 +140,8 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
 
             </ScrollView>
 
-            {/* Thanh Điều Hướng Dưới Cùng */}
             <WavyTabBar
                 activeTabProp="Other"
-                onNavigateToHome={onNavigateToHome}
-                onNavigateToWallet={onNavigateToWallet}
-                onNavigateToAnalysis={onNavigateToAnalyst}
             />
         </SafeAreaView>
     );

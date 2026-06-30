@@ -4,35 +4,25 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 
+import { useRouter } from 'expo-router';
+
 interface WavyTabBarProps {
-
-    onNavigateToHome?: () => void;
-
-    onNavigateToWallet?: () => void;
-
-    onNavigateToAnalysis?: () => void;
-
-    onNavigateToOther?: () => void;
-
     activeTabProp?: 'Home' | 'Wallet' | 'Analyst' | 'Other';
-
 }
 
 
 
 export default function WavyTabBar({
-
-    onNavigateToHome,
-
-    onNavigateToWallet,
-
-    onNavigateToAnalysis,
-
-    onNavigateToOther,
-
     activeTabProp = 'Wallet'
-
 }: WavyTabBarProps) {
+    const router = useRouter();
+
+    const handleNavigate = (tab: 'Home' | 'Wallet' | 'Analyst' | 'Other') => {
+        if (tab === 'Home') router.replace('/');
+        else if (tab === 'Wallet') router.replace('/wallet' as any);
+        else if (tab === 'Analyst') router.replace('/analysis' as any);
+        else if (tab === 'Other') router.replace('/other' as any);
+    };
 
     return (
 
@@ -45,11 +35,8 @@ export default function WavyTabBar({
                 {/* Home */}
 
                 <TouchableOpacity
-
                     style={[styles.navItem, activeTabProp === 'Home' && styles.activeNavItem]}
-
-                    onPress={onNavigateToHome}
-
+                    onPress={() => handleNavigate('Home')}
                     activeOpacity={0.8}
 
                 >
@@ -69,11 +56,8 @@ export default function WavyTabBar({
                 {/* Wallet */}
 
                 <TouchableOpacity
-
                     style={[styles.navItem, activeTabProp === 'Wallet' && styles.activeNavItem]}
-
-                    onPress={onNavigateToWallet}
-
+                    onPress={() => handleNavigate('Wallet')}
                     activeOpacity={0.8}
 
                 >
@@ -93,11 +77,8 @@ export default function WavyTabBar({
                 {/* Analyst */}
 
                 <TouchableOpacity
-
                     style={[styles.navItem, activeTabProp === 'Analyst' && styles.activeNavItem]}
-
-                    onPress={onNavigateToAnalysis}
-
+                    onPress={() => handleNavigate('Analyst')}
                     activeOpacity={0.8}
 
                 >
@@ -117,11 +98,8 @@ export default function WavyTabBar({
                 {/* Other */}
 
                 <TouchableOpacity
-
                     style={[styles.navItem, activeTabProp === 'Other' && styles.activeNavItem]}
-
-                    onPress={onNavigateToOther}
-
+                    onPress={() => handleNavigate('Other')}
                     activeOpacity={0.8}
 
                 >

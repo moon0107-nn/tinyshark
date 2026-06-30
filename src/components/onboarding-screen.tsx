@@ -1,25 +1,24 @@
 import { Image } from 'expo-image';
-import { useCallback, useEffect, useState } from 'react';
-import { Dimensions, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, Text } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withRepeat,
   withSequence,
-  withTiming,
   withSpring,
-  runOnJS,
+  withTiming,
 } from 'react-native-reanimated';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 const { width: W, height: H } = Dimensions.get('window');
 
 const SHARK_W = 180;
 const SHARK_H = 133;
 
-// Target center: entrance of the underwater house (bottom-right)
 const TARGET_CX = W * 0.76;
 const TARGET_CY = H * 0.73;
 
@@ -194,7 +193,7 @@ export function OnboardingScreen({ onComplete }: Props) {
 
   const sharkX = useSharedValue(START_X);
   const sharkY = useSharedValue(START_Y);
-  const sharkScale = useSharedValue(1.0); // Set initial scale to 1.0 (large shark due to base dimensions)
+  const sharkScale = useSharedValue(1.0);
   const sharkOpacity = useSharedValue(1);
   const sharkBob = useSharedValue(0);
 
@@ -210,6 +209,9 @@ export function OnboardingScreen({ onComplete }: Props) {
 
   const containerOpacity = useSharedValue(1);
 
+  // ── NEW: Full-screen grey overlay, starts fully visible ──────────────────
+  const greyOverlayOpacity = useSharedValue(1);
+
   // Idle bobbing animation
   useEffect(() => {
     sharkBob.value = withRepeat(
@@ -222,7 +224,7 @@ export function OnboardingScreen({ onComplete }: Props) {
     );
   }, []);
 
-  // Blinking effect for hand pointer (indicating user should touch)
+  // Blinking effect for hand pointer
   useEffect(() => {
     handOpacity.value = withRepeat(
       withSequence(
@@ -248,7 +250,13 @@ export function OnboardingScreen({ onComplete }: Props) {
       runOnJS(setDraggingStarted)(true);
       dragOffsetX.value = sharkX.value;
       dragOffsetY.value = sharkY.value;
-      // Bounce/Pop scale up to 1.35 on touch start with custom cubic-bezier
+
+      // ── Fade out the grey overlay when user first touches the shark ──────
+      greyOverlayOpacity.value = withTiming(0, {
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+      });
+
       sharkScale.value = withTiming(1.35, {
         duration: 300,
         easing: Easing.bezier(0.175, 0.885, 0.32, 1.275),
@@ -258,10 +266,8 @@ export function OnboardingScreen({ onComplete }: Props) {
       if (hasFinished.value) return;
       sharkX.value = dragOffsetX.value + e.translationX;
       sharkY.value = dragOffsetY.value + e.translationY;
-      
-      // Calculate drag distance from initial starting position
+
       const dragDist = Math.hypot(sharkX.value - START_X, sharkY.value - START_Y);
-      // Interpolate scale from 1.35 (at start) to 0.75 (at distance >= 120px)
       const progress = Math.min(dragDist / 120, 1);
       sharkScale.value = 1.35 - progress * (1.35 - 0.75);
     })
@@ -278,35 +284,28 @@ export function OnboardingScreen({ onComplete }: Props) {
         runOnJS(setHasFinishedState)(true);
         sharkX.value = withTiming(TARGET_CX - SHARK_W / 2, { duration: 400 });
         sharkY.value = withTiming(TARGET_CY - SHARK_H / 2, { duration: 400 });
-        
-        // Scale down to 0 and fade out on target collision
         sharkScale.value = withTiming(0, { duration: 800 });
         sharkOpacity.value = withTiming(0, { duration: 800 });
-
         runOnJS(triggerOnComplete)();
       } else {
-        // Spring back if dropped outside target area
         runOnJS(setDraggingStarted)(false);
         sharkX.value = withSpring(START_X, { damping: 15 });
         sharkY.value = withSpring(START_Y, { damping: 15 });
-        // Smoothly scale back to default 1.0 (large size)
         sharkScale.value = withTiming(1.0, { duration: 300 });
       }
     });
 
-  const sharkPositionStyle = useAnimatedStyle(() => {
-    return {
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      transform: [
-        { translateX: sharkX.value },
-        { translateY: sharkY.value },
-        { scale: sharkScale.value },
-      ],
-      opacity: sharkOpacity.value,
-    };
-  });
+  const sharkPositionStyle = useAnimatedStyle(() => ({
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    transform: [
+      { translateX: sharkX.value },
+      { translateY: sharkY.value },
+      { scale: sharkScale.value },
+    ],
+    opacity: sharkOpacity.value,
+  }));
 
   const bobStyle = useAnimatedStyle(() => {
     const applyBob = !isDragging.value && !hasFinished.value;
@@ -337,6 +336,11 @@ export function OnboardingScreen({ onComplete }: Props) {
     opacity: containerOpacity.value,
   }));
 
+  // ── Animated style for the grey overlay ──────────────────────────────────
+  const greyOverlayStyle = useAnimatedStyle(() => ({
+    opacity: greyOverlayOpacity.value,
+  }));
+
   return (
     <Animated.View style={[StyleSheet.absoluteFill, styles.overlay, containerStyle]}>
       {/* Underwater scene background */}
@@ -346,16 +350,13 @@ export function OnboardingScreen({ onComplete }: Props) {
         contentFit="cover"
       />
 
-      {/* Bottom vignette for atmosphere */}
-      <View style={styles.bottomVignette} pointerEvents="none" />
-
-      {/* Top vignette */}
-      <View style={styles.topVignette} pointerEvents="none" />
-
       {/* Floating bubbles */}
       {BUBBLES_CONFIG.map((b, i) => (
         <Bubble key={i} {...b} />
       ))}
+
+      {/* Grey overlay — nằm TRÊN background, DƯỚI shark */}
+      <Animated.View style={[styles.greyOverlay, greyOverlayStyle]} pointerEvents="none" />
 
       {/* Target glow ring (house entrance) */}
       <TargetGlow />
@@ -363,7 +364,7 @@ export function OnboardingScreen({ onComplete }: Props) {
       {/* Instruction text */}
       <InstructionText draggingStarted={draggingStarted} hasFinished={hasFinishedState} />
 
-      {/* Animated shark with Pan Gesture */}
+      {/* Animated shark — nằm TRÊN overlay để tạo điểm nhấn */}
       <GestureDetector gesture={gesture}>
         <Animated.View style={sharkPositionStyle as any}>
           <Animated.View style={bobStyle} pointerEvents="none">
@@ -399,39 +400,15 @@ const styles = StyleSheet.create({
     zIndex: 999,
     backgroundColor: '#08304d',
   },
-  skipBtn: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 50 : 35,
-    right: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1.2,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-    zIndex: 1000,
-  },
-  skipText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  bottomVignette: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: H * 0.38,
-    backgroundColor: 'rgba(2, 10, 22, 0.58)',
-  },
-  topVignette: {
+  greyOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: H * 0.08,
-    backgroundColor: 'rgba(5, 50, 80, 0.25)',
+    bottom: 0,
+    backgroundColor: 'rgba(30, 30, 30, 0.72)',
   },
+
   instructionContainer: {
     position: 'absolute',
     top: H * 0.10,

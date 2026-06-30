@@ -83,13 +83,13 @@ export default function App() {
                 </View>
 
                 {/* ─── FIXED LEFT SHARK BUBBLE ─── */}
-                <View style={styles.leftBubble}>
+                <TouchableOpacity style={styles.leftBubble} onPress={() => router.push('/shark-ai' as any)} activeOpacity={0.8}>
                     <Image
                         source={require('@/assets/images/shark-small.png')}
                         style={styles.floatingSharkImg}
                         contentFit="contain"
                     />
-                </View>
+                </TouchableOpacity>
 
                 <ScrollView
                     contentContainerStyle={styles.scrollContent}
@@ -273,10 +273,6 @@ export default function App() {
                 {/* ─── BOTTOM NAVIGATION BAR ─── */}
                 <WavyTabBar
                     activeTabProp="Home"
-                    onNavigateToHome={() => handleNavigate('Home')}
-                    onNavigateToWallet={() => handleNavigate('Wallet')}
-                    onNavigateToAnalysis={() => handleNavigate('Analyst')}
-                    onNavigateToOther={() => handleNavigate('Other')}
                 />
             </SafeAreaView>
         </LinearGradient>

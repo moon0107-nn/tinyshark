@@ -1,14 +1,10 @@
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WavyTabBar from './navbar';
 
-interface WalletScreenProps {
-    onNavigateToFinancialManager: () => void;
-    onNavigateToAnalysis?: () => void;
-    onNavigateToOther?: () => void;
-}
-
-export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther }: WalletScreenProps) {
+export default function WalletScreen() {
+    const router = useRouter();
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
@@ -63,7 +59,7 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
                     <Image source={require('@/assets/images/shark-tie.png')} style={styles.mascotImage} />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.largeCard} onPress={onNavigateToFinancialManager}>
+                <TouchableOpacity style={styles.largeCard} onPress={() => router.push('/financial-manager' as any)}>
                     <View style={styles.largeCardContent}>
                         <MaterialCommunityIcons name="finance" size={28} color="#fff" style={styles.cardIcon} />
                         <Text style={styles.largeCardText}>Quản lí tài chính</Text>
@@ -102,8 +98,6 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
             {/* Bottom Navigation */}
             <WavyTabBar 
                 activeTabProp="Wallet"
-                onNavigateToAnalysis={onNavigateToAnalysis} 
-                onNavigateToOther={onNavigateToOther}
             />
         </SafeAreaView>
     );
