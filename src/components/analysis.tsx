@@ -8,6 +8,7 @@ const { width } = Dimensions.get('window');
 interface AnalysisScreenProps {
     onNavigateToWallet?: () => void;
     onNavigateToOther?: () => void;
+    onNavigateToHome?: () => void;
 }
 
 type TabType = 'Tuần' | 'Tháng' | 'Năm';
@@ -34,7 +35,7 @@ const chartDataMock = {
     }
 };
 
-export default function AnalysisScreen({ onNavigateToWallet, onNavigateToOther }: AnalysisScreenProps) {
+export default function AnalysisScreen({ onNavigateToWallet, onNavigateToOther, onNavigateToHome }: AnalysisScreenProps) {
     const [activeTab, setActiveTab] = useState<TabType>('Tuần');
     const tabs: TabType[] = ['Tuần', 'Tháng', 'Năm'];
 
@@ -150,6 +151,7 @@ export default function AnalysisScreen({ onNavigateToWallet, onNavigateToOther }
             {/* Thanh Điều Hướng (Bottom Navigation) */}
             <WavyTabBar 
                 activeTabProp="Analyst"
+                onNavigateToHome={onNavigateToHome}
                 onNavigateToWallet={onNavigateToWallet}
                 onNavigateToOther={onNavigateToOther}
             />

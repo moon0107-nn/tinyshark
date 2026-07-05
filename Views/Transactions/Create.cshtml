@@ -1,0 +1,62 @@
+﻿@model TinyShark.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Thêm giao dịch</h1>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div>
+        <h2 style="font-size:18px;font-weight:700;color:var(--ts-text);margin:0">Thêm giao dịch mới</h2>
+        <p style="font-size:12.5px;color:var(--ts-text-muted);margin-top:4px">Nhập thông tin chi tiết cho giao dịch</p>
+    </div>
+    <a asp-action="Index" class="ts-btn ts-btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+    </a>
+</div>
+
+<div class="ts-panel" style="max-width:440px">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-bottom:14px;font-size:12px"></div>
+
+        <div style="margin-bottom:16px">
+            <label asp-for="Amount" class="ts-label">Số tiền (₫)</label>
+            <input asp-for="Amount" class="ts-input" placeholder="0" />
+            <span asp-validation-for="Amount" class="text-danger" style="font-size:11px;display:block;margin-top:4px"></span>
+        </div>
+
+        <div style="margin-bottom:16px">
+            <label asp-for="Description" class="ts-label">Mô tả giao dịch</label>
+            <input asp-for="Description" class="ts-input" placeholder="Ví dụ: Tiền lương tháng 6" />
+            <span asp-validation-for="Description" class="text-danger" style="font-size:11px;display:block;margin-top:4px"></span>
+        </div>
+
+        <div style="margin-bottom:16px">
+            <label asp-for="Date" class="ts-label">Ngày giao dịch</label>
+            <input asp-for="Date" class="ts-input" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="Date" class="text-danger" style="font-size:11px;display:block;margin-top:4px"></span>
+        </div>
+
+        <div style="margin-bottom:20px">
+            <label asp-for="Type" class="ts-label">Loại giao dịch</label>
+            <select asp-for="Type" class="ts-input">
+                <option value="">-- Chọn loại --</option>
+                <option value="Thu nhập">Thu nhập</option>
+                <option value="Chi tiêu">Chi tiêu</option>
+                <option value="Tiết kiệm">Tiết kiệm</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger" style="font-size:11px;display:block;margin-top:4px"></span>
+        </div>
+
+        <div style="display:flex;gap:8px">
+            <input type="submit" value="Lưu giao dịch" class="ts-btn ts-btn-primary" style="cursor:pointer;border:none" />
+            <a asp-action="Index" class="ts-btn ts-btn-outline">Huỷ</a>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

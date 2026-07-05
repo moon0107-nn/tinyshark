@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
     Platform,
@@ -12,7 +13,6 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import WavyTabBar from './navbar';
 
 const segmentData = {
@@ -56,15 +56,7 @@ export default function App() {
             <StatusBar barStyle="dark-content" />
 
             <SafeAreaView style={styles.safeArea}>
-                {/* ─── MOCK STATUS BAR ─── */}
-                <View style={styles.statusBarMock}>
-                    <Text style={styles.statusBarTime}>4:19</Text>
-                    <View style={styles.statusBarIcons}>
-                        <Ionicons name="cellular" size={15} color="#000" style={{ marginRight: 5 }} />
-                        <Ionicons name="wifi" size={15} color="#000" style={{ marginRight: 5 }} />
-                        <Ionicons name="battery-full" size={18} color="#000" />
-                    </View>
-                </View>
+
 
                 {/* ─── FIXED HEADER ─── */}
                 <View style={styles.fixedHeader}>
@@ -354,7 +346,7 @@ const styles = StyleSheet.create({
     levelContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 15,
+        marginTop: 35,
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 3,
@@ -490,16 +482,16 @@ const styles = StyleSheet.create({
     },
     loveTopleft: {
         position: 'absolute',
-        top: 238,
-        left: 48,
+        top: 233,
+        left: 43,
         width: 44,
         height: 44,
         zIndex: 5,
     },
     loveBottomRight: {
         position: 'absolute',
-        bottom: 195,
-        right: 37,
+        bottom: 194,
+        right: 33,
         width: 44,
         height: 44,
         zIndex: 5,

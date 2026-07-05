@@ -1,11 +1,9 @@
-import { DarkTheme, DefaultTheme, Slot, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider, Slot } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
-import 'react-native-gesture-handler';
+import { StyleSheet, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
 import { LoginScreen } from '@/components/login-screen';
 import { OnboardingScreen } from '@/components/onboarding-screen';
 
@@ -18,12 +16,9 @@ export default function TabLayout() {
     <GestureHandlerRootView style={styles.root}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AnimatedSplashOverlay />
-        <View style={{ display: 'none' }}>
-          <Slot />
-        </View>
 
         {isLoggedIn ? (
-          <AppTabs />
+          <Slot />
         ) : onboardingDone ? (
           <LoginScreen onLogin={() => setIsLoggedIn(true)} />
         ) : (

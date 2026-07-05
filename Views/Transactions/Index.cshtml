@@ -1,0 +1,71 @@
+﻿@model IEnumerable<TinyShark.Models.Transaction>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout1.cshtml";
+}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div>
+        <h2 style="font-size:18px;font-weight:700;color:var(--ts-text);margin:0">
+            <i class="fa-solid fa-water" style="color:var(--ts-primary);margin-right:8px"></i>
+            Sổ tay cá mập
+        </h2>
+        <p style="font-size:12.5px;color:var(--ts-text-muted);margin-top:4px">Theo dõi toàn bộ giao dịch thu chi</p>
+    </div>
+    <a asp-action="Create" class="ts-btn ts-btn-primary">
+        <i class="fa-solid fa-plus"></i> Thêm giao dịch
+    </a>
+</div>
+
+<div class="ts-panel" style="padding:0;overflow:hidden">
+    <table class="ts-table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Amount)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Date)</th>
+                <th>Phân loại</th>
+                <th style="text-align:center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="font-weight:700">@item.Amount.ToString("#,##0") đ</td>
+                    <td style="color:var(--ts-text-muted)">@item.Description</td>
+                    <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (item.Type == "Thu" || item.Type == "Thu nhập")
+                        {
+                            <span class="ts-tag thu">Thu nhập</span>
+                        }
+                        else if (item.Type == "Tiết kiệm")
+                        {
+                            <span class="ts-tag save">Tiết kiệm</span>
+                        }
+                        else
+                        {
+                            <span class="ts-tag chi">Chi tiêu</span>
+                        }
+                    </td>
+                    <td style="text-align:center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="ts-btn ts-btn-outline" style="padding:5px 10px;font-size:11px">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="ts-btn ts-btn-danger" style="padding:5px 10px;font-size:11px">
+                            <i class="fa-solid fa-trash"></i> Xoá
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <div style="text-align:center;color:var(--ts-text-muted);padding:40px;font-size:12.5px">
+            <i class="fa-solid fa-inbox" style="font-size:28px;display:block;margin-bottom:10px;opacity:0.4"></i>
+            Chưa có giao dịch nào. Bắt đầu bằng cách thêm giao dịch mới.
+        </div>
+    }
+</div>

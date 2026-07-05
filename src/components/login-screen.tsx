@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Animated, {
   Easing,
+  runOnUI,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -182,7 +183,10 @@ export function LoginScreen({ onLogin }: Props) {
   // ── Step transition ───────────────────────────────────────────────────────
   const go = (next: Step) => {
     // Fade out card content
-    cardOpacity.value = withTiming(0, { duration: 160 });
+    runOnUI(() => {
+      'worklet';
+      cardOpacity.value = withTiming(0, { duration: 160 });
+    })();
 
     setTimeout(() => {
       setStep(next);
@@ -192,13 +196,13 @@ export function LoginScreen({ onLogin }: Props) {
       if (next === 'login') targetH = CARD_H_LOGIN;
       else if (next === 'register') targetH = CARD_H_REGISTER;
 
-      cardHeight.value = withTiming(targetH, { duration: 320, easing: Easing.out(Easing.cubic) });
-
-      // Fade tao2 coral in/out (only visible on register)
-      taoOpacity.value = withTiming(next === 'register' ? 1 : 0, { duration: 400 });
-
-      // Fade in card content
-      cardOpacity.value = withTiming(1, { duration: 280 });
+      const isReg = next === 'register';
+      runOnUI((h: number, reg: boolean) => {
+        'worklet';
+        cardHeight.value = withTiming(h, { duration: 320, easing: Easing.out(Easing.cubic) });
+        taoOpacity.value = withTiming(reg ? 1 : 0, { duration: 400 });
+        cardOpacity.value = withTiming(1, { duration: 280 });
+      })(targetH, isReg);
     }, 160);
   };
 
@@ -376,10 +380,10 @@ export function LoginScreen({ onLogin }: Props) {
             </Pressable>
 
             <Pressable
-              style={({ pressed }) => [styles.progressBtn, pressed && styles.pressed]}
+              style={({ pressed }) => [styles.btnCyan, pressed && styles.pressed]}
               onPress={onLogin}
             >
-              <View style={styles.progressBarFill} />
+              <Text style={styles.btnCyanTxt}>Đăng nhập</Text>
             </Pressable>
 
             {/* Divider + Social */}

@@ -6,9 +6,10 @@ interface WalletScreenProps {
     onNavigateToFinancialManager: () => void;
     onNavigateToAnalysis?: () => void;
     onNavigateToOther?: () => void;
+    onNavigateToHome?: () => void;
 }
 
-export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther }: WalletScreenProps) {
+export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther, onNavigateToHome }: WalletScreenProps) {
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
@@ -100,9 +101,10 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
             </ScrollView>
 
             {/* Bottom Navigation */}
-            <WavyTabBar 
+            <WavyTabBar
                 activeTabProp="Wallet"
-                onNavigateToAnalysis={onNavigateToAnalysis} 
+                onNavigateToHome={onNavigateToHome}
+                onNavigateToAnalysis={onNavigateToAnalysis}
                 onNavigateToOther={onNavigateToOther}
             />
         </SafeAreaView>

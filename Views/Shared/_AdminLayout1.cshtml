@@ -1,0 +1,1041 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TinyShark | @ViewBag.Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root {
+            --ts-primary: #12AEBE;
+            --ts-primary-dark: #0D8A9A;
+            --ts-primary-light: #E3F7FA;
+            --ts-primary-mid: #8FD8E2;
+            --ts-sidebar: #0C2E33;
+            --ts-sidebar-hover: #143A40;
+            --ts-sidebar-active-bg: rgba(18,174,190,0.18);
+            --ts-bg: #F4FAFB;
+            --ts-text: #1A2E31;
+            --ts-text-muted: #6B8C90;
+            --ts-border: #D6EEF1;
+            --ts-white: #FFFFFF;
+            --ts-card-shadow: 0 1px 3px rgba(12,46,51,0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--ts-bg);
+            color: var(--ts-text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 13px;
+            min-height: 100vh;
+            display: flex;
+            margin: 0;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .ts-sidebar {
+            width: 220px;
+            min-width: 220px;
+            background: var(--ts-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            inset-block: 0;
+            left: 0;
+            z-index: 50;
+            overflow-y: auto;
+        }
+
+        .ts-logo {
+            padding: 20px 18px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .ts-logo-mark { display: flex; align-items: center; gap: 9px; }
+
+        .ts-logo-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: var(--ts-primary);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ts-logo-icon svg { width: 17px; height: 17px; }
+        .ts-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+
+        .ts-logo-name {
+            font-weight: 700; font-size: 14.5px;
+            color: #fff; letter-spacing: 0.4px;
+        }
+
+        .ts-logo-sub {
+            font-size: 10px; color: var(--ts-primary);
+            letter-spacing: 1.1px; text-transform: uppercase; font-weight: 600;
+        }
+
+        .ts-nav {
+            flex: 1; padding: 14px 10px;
+            display: flex; flex-direction: column; gap: 2px;
+        }
+
+        .ts-nav-section {
+            font-size: 10px; font-weight: 600;
+            letter-spacing: 1.2px; text-transform: uppercase;
+            color: rgba(255,255,255,0.25);
+            padding: 10px 8px 4px; margin-top: 4px;
+        }
+
+        .sidebar-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 10px; border-radius: 8px;
+            cursor: pointer; font-size: 12.5px; font-weight: 500;
+            color: #A8C8CC;
+            transition: background 0.15s, color 0.15s;
+            white-space: nowrap; border: none;
+            background: transparent; width: 100%; text-align: left;
+        }
+
+        .sidebar-btn:hover { background: var(--ts-sidebar-hover); color: #fff; }
+
+        .sidebar-btn.sidebar-active {
+            background: var(--ts-sidebar-active-bg);
+            color: var(--ts-primary);
+        }
+
+        .sidebar-btn i { width: 16px; text-align: center; font-size: 13px; opacity: 0.8; }
+        .sidebar-btn.sidebar-active i { opacity: 1; }
+
+        .sidebar-badge {
+            margin-left: auto;
+            background: var(--ts-primary); color: #fff;
+            font-size: 9px; font-weight: 700;
+            padding: 2px 6px; border-radius: 20px;
+        }
+
+        .ts-sidebar-footer {
+            padding: 14px 12px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; gap: 9px;
+        }
+
+        .ts-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--ts-primary);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 11px; color: #fff; flex-shrink: 0;
+        }
+
+        .ts-footer-name {
+            font-size: 12px; font-weight: 600; color: #fff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        .ts-footer-role { font-size: 10px; color: #6A9EA3; margin-top: 1px; }
+
+        /* ============ MAIN ============ */
+        .ts-main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .ts-topbar {
+            background: var(--ts-white);
+            border-bottom: 1px solid var(--ts-border);
+            padding: 0 24px; height: 54px;
+            display: flex; align-items: center; gap: 14px;
+            position: sticky; top: 0; z-index: 40;
+        }
+
+        .ts-topbar-title { font-size: 15px; font-weight: 700; color: var(--ts-text); flex: 1; }
+
+        .ts-topbar-icon {
+            width: 34px; height: 34px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--ts-text-muted);
+            transition: background 0.15s, color 0.15s; position: relative;
+        }
+
+        .ts-topbar-icon:hover { background: var(--ts-primary-light); color: var(--ts-primary); }
+
+        .ts-notif-badge {
+            position: absolute; top: 4px; right: 4px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--ts-primary); border: 2px solid #fff;
+        }
+
+        .ts-admin-chip {
+            display: flex; align-items: center; gap: 8px;
+            padding: 4px 10px 4px 4px;
+            border: 1px solid var(--ts-border); border-radius: 20px; cursor: pointer;
+        }
+
+        .ts-content { flex: 1; padding: 22px 26px; }
+
+        /* ============ STAT CARDS ============ */
+        .ts-stat-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 14px; margin-bottom: 20px;
+        }
+
+        .ts-stat-card {
+            background: var(--ts-white);
+            border: 1px solid var(--ts-border); border-radius: 12px;
+            padding: 16px 18px; display: flex; flex-direction: column;
+            gap: 10px; box-shadow: var(--ts-card-shadow);
+        }
+
+        .ts-stat-top { display: flex; align-items: center; justify-content: space-between; }
+
+        .ts-stat-label {
+            font-size: 11px; font-weight: 600; color: var(--ts-text-muted);
+            text-transform: uppercase; letter-spacing: 0.6px;
+        }
+
+        .ts-stat-icon {
+            width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 13px;
+        }
+
+        .ts-stat-icon.teal { background: var(--ts-primary-light); color: var(--ts-primary); }
+        .ts-stat-icon.green { background: #EAFAF0; color: #1A8C4E; }
+        .ts-stat-icon.amber { background: #FEF6E8; color: #C47E1A; }
+        .ts-stat-icon.red { background: #FEE9E9; color: #C43A3A; }
+
+        .ts-stat-value { font-size: 22px; font-weight: 700; color: var(--ts-text); line-height: 1; }
+
+        .ts-stat-change {
+            font-size: 10.5px; font-weight: 600;
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        .ts-stat-change.up { color: #1A8C4E; }
+        .ts-stat-change.down { color: #C43A3A; }
+
+        /* ============ PANEL / TABLE ============ */
+        .ts-panel {
+            background: var(--ts-white);
+            border: 1px solid var(--ts-border); border-radius: 12px;
+            padding: 18px; box-shadow: var(--ts-card-shadow);
+        }
+
+        .ts-panel-header {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 14px;
+        }
+
+        .ts-panel-title { font-size: 13px; font-weight: 700; color: var(--ts-text); }
+
+        .ts-panel-link {
+            font-size: 11.5px; color: var(--ts-primary);
+            font-weight: 600; cursor: pointer; text-decoration: none;
+        }
+
+        .ts-panel-link:hover { text-decoration: underline; }
+
+        .ts-table { width: 100%; border-collapse: collapse; }
+
+        .ts-table th {
+            font-size: 10.5px; font-weight: 600; color: var(--ts-text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            text-align: left; padding: 0 10px 10px;
+            border-bottom: 1px solid var(--ts-border);
+        }
+
+        .ts-table td {
+            padding: 11px 10px; font-size: 12.5px; color: var(--ts-text);
+            border-bottom: 1px solid #EDF5F7; vertical-align: middle;
+        }
+
+        .ts-table tr:last-child td { border-bottom: none; }
+        .ts-table tr:hover td { background: #F9FDFD; }
+
+        /* ============ EMPTY STATE ============ */
+        .ts-empty {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 48px 24px; gap: 10px;
+            color: var(--ts-text-muted);
+        }
+
+        .ts-empty-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: var(--ts-primary-light);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: var(--ts-primary);
+            margin-bottom: 4px;
+        }
+
+        .ts-empty-title {
+            font-size: 13px; font-weight: 700;
+            color: var(--ts-text); margin: 0;
+        }
+
+        .ts-empty-sub {
+            font-size: 12px; color: var(--ts-text-muted);
+            text-align: center; margin: 0; max-width: 240px; line-height: 1.5;
+        }
+
+        /* ============ SKELETON LOADER ============ */
+        .ts-skeleton {
+            background: linear-gradient(90deg, #EDF5F7 25%, #E3F7FA 50%, #EDF5F7 75%);
+            background-size: 200% 100%;
+            animation: ts-shimmer 1.4s infinite;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        @@keyframes ts-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============ TAGS / BADGES ============ */
+        .ts-tag {
+            display: inline-flex; align-items: center;
+            padding: 3px 9px; border-radius: 20px;
+            font-size: 10.5px; font-weight: 600;
+        }
+
+        .ts-tag.thu  { background: var(--ts-primary-light); color: var(--ts-primary-dark); }
+        .ts-tag.chi  { background: #FEE9E9; color: #A83232; }
+        .ts-tag.save { background: #EAFAF0; color: #1A6E3E; }
+        .ts-tag.pending { background: #FEF6E8; color: #A06010; }
+
+        /* ============ STATUS ============ */
+        .ts-status {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 9px; border-radius: 20px;
+            font-size: 10.5px; font-weight: 600;
+        }
+
+        .ts-status::before {
+            content: ''; width: 6px; height: 6px;
+            border-radius: 50%; background: currentColor;
+        }
+
+        .ts-status.success { background: #EAFAF0; color: #1A6E3E; }
+        .ts-status.warning { background: #FEF6E8; color: #A06010; }
+        .ts-status.danger  { background: #FEE9E9; color: #A83232; }
+        .ts-status.info    { background: var(--ts-primary-light); color: var(--ts-primary-dark); }
+
+        /* ============ BUTTONS ============ */
+        .ts-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 8px;
+            font-size: 12px; font-weight: 600;
+            cursor: pointer; border: none;
+            transition: opacity 0.15s, background 0.15s;
+            text-decoration: none;
+        }
+
+        .ts-btn:hover { opacity: 0.88; }
+        .ts-btn-primary { background: var(--ts-primary); color: #fff; }
+
+        .ts-btn-outline {
+            background: transparent;
+            border: 1px solid var(--ts-border); color: var(--ts-text);
+        }
+
+        .ts-btn-outline:hover {
+            background: var(--ts-primary-light);
+            border-color: var(--ts-primary); color: var(--ts-primary);
+        }
+
+        .ts-btn-danger { background: #FEE9E9; color: #A83232; }
+
+        /* ============ FORM ============ */
+        .ts-input {
+            width: 100%; padding: 8px 12px;
+            border: 1px solid var(--ts-border); border-radius: 8px;
+            font-size: 12.5px; color: var(--ts-text);
+            background: var(--ts-white); outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .ts-input:focus {
+            border-color: var(--ts-primary);
+            box-shadow: 0 0 0 3px var(--ts-primary-light);
+        }
+
+        .ts-input::placeholder { color: var(--ts-text-muted); }
+
+        .ts-label {
+            display: block; font-size: 11.5px; font-weight: 600;
+            color: var(--ts-text-muted); margin-bottom: 5px;
+        }
+
+        /* ============ PROGRESS BARS ============ */
+        .ts-progress-track { background: #EDF5F7; border-radius: 3px; height: 5px; overflow: hidden; }
+
+        .ts-progress-fill {
+            height: 100%; border-radius: 3px;
+            background: var(--ts-primary); transition: width 0.4s ease;
+        }
+
+        /* ============ MODAL ============ */
+        .ts-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(12,46,51,0.55);
+            z-index: 1000; display: none;
+            align-items: center; justify-content: center;
+        }
+
+        .ts-modal-overlay.open { display: flex; }
+
+        .ts-modal {
+            background: var(--ts-white); border-radius: 14px;
+            width: 100%; max-width: 480px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(12,46,51,0.2);
+        }
+
+        .ts-modal-header {
+            background: var(--ts-sidebar); padding: 16px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .ts-modal-title { font-size: 14px; font-weight: 700; color: #fff; }
+
+        .ts-modal-close {
+            color: #A8C8CC; cursor: pointer;
+            background: none; border: none; font-size: 16px;
+            line-height: 1; transition: color 0.15s;
+        }
+
+        .ts-modal-close:hover { color: #fff; }
+        .ts-modal-body { padding: 22px; }
+
+        /* ============ TABS ============ */
+        .ts-tabs-pill {
+            display: flex; gap: 4px;
+            background: var(--ts-bg);
+            border: 1px solid var(--ts-border); border-radius: 9px;
+            padding: 3px; width: fit-content;
+        }
+
+        .ts-tab-pill {
+            padding: 5px 14px; border-radius: 7px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            color: var(--ts-text-muted); border: none;
+            background: transparent; transition: all 0.15s;
+        }
+
+        .ts-tab-pill.active {
+            background: var(--ts-white); color: var(--ts-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ============ CHART ============ */
+        .ts-chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 70px; }
+
+        .ts-bar {
+            flex: 1; border-radius: 4px 4px 0 0;
+            background: var(--ts-primary-light); transition: background 0.2s; cursor: pointer;
+        }
+
+        .ts-bar:hover { background: var(--ts-primary-mid); }
+        .ts-bar.active { background: var(--ts-primary); }
+
+        .ts-chart-labels { display: flex; gap: 6px; margin-top: 5px; }
+
+        .ts-chart-labels span {
+            flex: 1; font-size: 9.5px;
+            color: var(--ts-text-muted); text-align: center;
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--ts-border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ts-primary-mid); }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="ts-sidebar">
+    <div class="ts-logo">
+        <div class="ts-logo-mark">
+            <div class="ts-logo-icon">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2C8 2 4 5 4 9C4 11.2 5.8 13 8 13C10.2 13 12 11.2 12 9C12 5 8 2 8 2Z" fill="white" opacity="0.9"/>
+                    <path d="M8 7L6 10H10L8 7Z" fill="#12AEBE" opacity="0.65"/>
+                </svg>
+            </div>
+            <div class="ts-logo-text">
+                <span class="ts-logo-name">TinyShark</span>
+                <span class="ts-logo-sub">Finance</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="ts-nav">
+        <span class="ts-nav-section">Tổng quan</span>
+
+        <a href="/" class="sidebar-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "sidebar-active" : "")">
+        <i class="fa-solid fa-chart-pie"></i> Tổng quan
+        </a>
+
+        <span class="ts-nav-section">Quản lý</span>
+
+        <a href="/Transactions" class="sidebar-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Transactions" ? "sidebar-active" : "")">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i> Giao dịch
+        </a>
+
+        <button onclick="switchTab('budgets')" id="btn-budgets" class="sidebar-btn">
+            <i class="fa-solid fa-wallet"></i> Ngân sách
+        </button>
+
+        <button onclick="switchTab('users')" id="btn-users" class="sidebar-btn">
+            <i class="fa-solid fa-users"></i> Người dùng
+        </button>
+
+        <button onclick="switchTab('reports')" id="btn-reports" class="sidebar-btn">
+            <i class="fa-solid fa-chart-line"></i> Báo cáo
+        </button>
+
+        <span class="ts-nav-section">Hệ thống</span>
+
+        <button onclick="switchTab('settings')" id="btn-settings" class="sidebar-btn">
+            <i class="fa-solid fa-gear"></i> Cài đặt
+        </button>
+    </nav>
+
+    <div class="ts-sidebar-footer">
+        <div class="ts-avatar" id="admin-avatar">AD</div>
+        <div style="flex:1;min-width:0">
+            <div class="ts-footer-name" id="admin-name">Quản trị viên</div>
+            <div class="ts-footer-role">Admin hệ thống</div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="ts-main">
+
+    <header class="ts-topbar">
+        <h2 class="ts-topbar-title" id="page-title">Tổng quan</h2>
+
+        <div class="ts-tabs-pill">
+            <button class="ts-tab-pill active" onclick="setPeriod(this,'month')">Tháng này</button>
+            <button class="ts-tab-pill" onclick="setPeriod(this,'quarter')">Quý</button>
+            <button class="ts-tab-pill" onclick="setPeriod(this,'year')">Năm</button>
+        </div>
+
+        <div class="ts-topbar-icon" title="Thông báo">
+            <i class="fa-solid fa-bell" style="font-size:15px"></i>
+            <span class="ts-notif-badge"></span>
+        </div>
+
+        <div class="ts-admin-chip">
+            <div class="ts-avatar" style="width:26px;height:26px;font-size:10px">AD</div>
+            <span style="font-size:12px;font-weight:600;color:var(--ts-text)">Admin</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:10px;color:var(--ts-text-muted)"></i>
+        </div>
+    </header>
+
+    <main class="ts-content">
+
+        <!-- ======== DASHBOARD ======== -->
+        <section id="tab-dashboard" class="tab-content active" style="display:block">
+
+            <div class="ts-stat-grid">
+                <div class="ts-stat-card">
+                    <div class="ts-stat-top">
+                        <span class="ts-stat-label">Tổng thu</span>
+                        <div class="ts-stat-icon teal"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    </div>
+                    <div class="ts-stat-value" id="db-revenue">
+                        <span class="ts-skeleton" style="width:100px;height:22px"></span>
+                    </div>
+                    <div class="ts-stat-change up" id="db-revenue-change">
+                        <span class="ts-skeleton" style="width:80px;height:12px"></span>
+                    </div>
+                </div>
+
+                <div class="ts-stat-card">
+                    <div class="ts-stat-top">
+                        <span class="ts-stat-label">Tổng chi</span>
+                        <div class="ts-stat-icon red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    </div>
+                    <div class="ts-stat-value" id="db-expense">
+                        <span class="ts-skeleton" style="width:100px;height:22px"></span>
+                    </div>
+                    <div class="ts-stat-change down" id="db-expense-change">
+                        <span class="ts-skeleton" style="width:80px;height:12px"></span>
+                    </div>
+                </div>
+
+                <div class="ts-stat-card">
+                    <div class="ts-stat-top">
+                        <span class="ts-stat-label">Tiết kiệm</span>
+                        <div class="ts-stat-icon green"><i class="fa-solid fa-piggy-bank"></i></div>
+                    </div>
+                    <div class="ts-stat-value" id="db-savings">
+                        <span class="ts-skeleton" style="width:100px;height:22px"></span>
+                    </div>
+                    <div class="ts-stat-change up" id="db-savings-change">
+                        <span class="ts-skeleton" style="width:80px;height:12px"></span>
+                    </div>
+                </div>
+
+                <div class="ts-stat-card">
+                    <div class="ts-stat-top">
+                        <span class="ts-stat-label">Giao dịch</span>
+                        <div class="ts-stat-icon amber"><i class="fa-solid fa-right-left"></i></div>
+                    </div>
+                    <div class="ts-stat-value" id="db-transactions">
+                        <span class="ts-skeleton" style="width:60px;height:22px"></span>
+                    </div>
+                    <div class="ts-stat-change up" id="db-transactions-change">
+                        <span class="ts-skeleton" style="width:80px;height:12px"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 300px;gap:16px">
+
+                <div class="ts-panel">
+                    <div class="ts-panel-header">
+                        <span class="ts-panel-title">
+                            <i class="fa-solid fa-clock-rotate-left" style="color:var(--ts-primary);margin-right:6px"></i>
+                            Giao dịch gần đây
+                        </span>
+                        <a href="/Transactions" class="ts-panel-link">Xem tất cả →</a>
+                    </div>
+                    <table class="ts-table">
+                        <thead>
+                            <tr>
+                                <th>Mô tả</th>
+                                <th>Danh mục</th>
+                                <th>Ngày</th>
+                                <th style="text-align:right">Số tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-dashboard-transactions">
+                            <!-- Skeleton rows -->
+                            @for (int i = 0; i < 4; i++)
+                            {
+                                <tr>
+                                    <td><span class="ts-skeleton" style="width:120px;height:13px;display:block"></span></td>
+                                    <td><span class="ts-skeleton" style="width:60px;height:13px;display:block"></span></td>
+                                    <td><span class="ts-skeleton" style="width:70px;height:13px;display:block"></span></td>
+                                    <td style="text-align:right"><span class="ts-skeleton" style="width:80px;height:13px;display:block;margin-left:auto"></span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:14px">
+
+                    <div class="ts-panel">
+                        <div class="ts-panel-header">
+                            <span class="ts-panel-title">Thu – Chi tuần này</span>
+                        </div>
+                        <div class="ts-chart-wrap" id="chart-weekly">
+                            <div class="ts-bar" style="height:40%"></div>
+                            <div class="ts-bar" style="height:60%"></div>
+                            <div class="ts-bar active" style="height:80%"></div>
+                            <div class="ts-bar" style="height:55%"></div>
+                            <div class="ts-bar" style="height:90%"></div>
+                            <div class="ts-bar" style="height:70%"></div>
+                            <div class="ts-bar" style="height:50%"></div>
+                        </div>
+                        <div class="ts-chart-labels">
+                            <span>T2</span><span>T3</span><span>T4</span>
+                            <span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                        </div>
+                    </div>
+
+                    <div class="ts-panel" style="flex:1">
+                        <div class="ts-panel-header">
+                            <span class="ts-panel-title">Ngân sách tháng</span>
+                            <a class="ts-panel-link" onclick="switchTab('budgets')">Chi tiết</a>
+                        </div>
+                        <div id="budget-summary">
+                            @for (int i = 0; i < 3; i++)
+                            {
+                                <div style="margin-bottom:14px">
+                                    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                                        <span class="ts-skeleton" style="width:70px;height:12px;display:block"></span>
+                                        <span class="ts-skeleton" style="width:30px;height:12px;display:block"></span>
+                                    </div>
+                                    <div class="ts-progress-track">
+                                        <div class="ts-skeleton" style="width:100%;height:5px;border-radius:3px"></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======== TRANSACTIONS ======== -->
+        <section id="tab-transactions" class="tab-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <div style="display:flex;gap:8px;align-items:center">
+                    <input type="text" id="search-transaction" class="ts-input"
+                           placeholder="Tìm giao dịch..." style="width:220px" />
+                    <select class="ts-input" style="width:140px">
+                        <option>Tất cả loại</option>
+                        <option>Thu nhập</option>
+                        <option>Chi tiêu</option>
+                        <option>Tiết kiệm</option>
+                    </select>
+                </div>
+                <a href="/Transactions/Create" class="ts-btn ts-btn-primary">
+            <i class="fa-solid fa-plus"></i> Thêm giao dịch
+            </a>
+            </div>
+            <div class="ts-panel" style="padding:0;overflow:hidden">
+                <table class="ts-table">
+                    <thead>
+                        <tr>
+                            <th>Mô tả</th>
+                            <th>Danh mục</th>
+                            <th>Loại</th>
+                            <th>Ngày</th>
+                            <th style="text-align:right">Số tiền</th>
+                            <th style="text-align:center;width:90px">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-transactions-body">
+                        <tr>
+                            <td colspan="6">
+                                <div class="ts-empty">
+                                    <div class="ts-empty-icon">
+                                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                    </div>
+                                    <p class="ts-empty-title">Chưa có giao dịch nào</p>
+                                    <p class="ts-empty-sub">Bắt đầu theo dõi tài chính bằng cách thêm giao dịch đầu tiên</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======== BUDGETS ======== -->
+        <section id="tab-budgets" class="tab-content">
+            <div style="display:grid;grid-template-columns:320px 1fr;gap:18px">
+                <div class="ts-panel" style="height:fit-content">
+                    <h3 class="ts-panel-title" style="margin-bottom:16px">Tạo ngân sách mới</h3>
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <div>
+                            <label class="ts-label">Tên danh mục *</label>
+                            <input type="text" id="input-budget-name" class="ts-input" placeholder="Sinh hoạt, Giải trí..." />
+                        </div>
+                        <div>
+                            <label class="ts-label">Hạn mức (₫) *</label>
+                            <input type="number" id="input-budget-limit" class="ts-input" placeholder="5.000.000" />
+                        </div>
+                        <button class="ts-btn ts-btn-primary" style="width:100%;justify-content:center">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu ngân sách
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ts-panel">
+                    <div class="ts-panel-header">
+                        <span class="ts-panel-title">Ngân sách đang theo dõi</span>
+                    </div>
+                    <div id="budget-list">
+                        <div class="ts-empty">
+                            <div class="ts-empty-icon">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <p class="ts-empty-title">Chưa có ngân sách nào</p>
+                            <p class="ts-empty-sub">Tạo ngân sách để kiểm soát chi tiêu hiệu quả hơn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======== USERS ======== -->
+        <section id="tab-users" class="tab-content">
+            <div class="ts-panel" style="padding:0;overflow:hidden">
+                <table class="ts-table">
+                    <thead>
+                        <tr>
+                            <th>Người dùng</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày đăng ký</th>
+                            <th style="text-align:center">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-users-body">
+                        <tr>
+                            <td colspan="5">
+                                <div class="ts-empty">
+                                    <div class="ts-empty-icon">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <p class="ts-empty-title">Chưa có người dùng nào</p>
+                                    <p class="ts-empty-sub">Danh sách người dùng sẽ hiển thị tại đây</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======== REPORTS ======== -->
+        <section id="tab-reports" class="tab-content">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px">
+                <div class="ts-stat-card">
+                    <span class="ts-stat-label">Tổng thu nhập</span>
+                    <div class="ts-stat-value" id="rep-total">0₫</div>
+                </div>
+                <div class="ts-stat-card">
+                    <span class="ts-stat-label">Giao dịch thành công</span>
+                    <div class="ts-stat-value" id="rep-success">0</div>
+                </div>
+                <div class="ts-stat-card">
+                    <span class="ts-stat-label">Giao dịch bị huỷ</span>
+                    <div class="ts-stat-value" id="rep-cancel">0</div>
+                </div>
+            </div>
+            <div class="ts-panel">
+                <div class="ts-panel-header">
+                    <span class="ts-panel-title">Cơ cấu thu chi theo danh mục</span>
+                </div>
+                <div id="report-bars-container">
+                    <div class="ts-empty">
+                        <div class="ts-empty-icon">
+                            <i class="fa-solid fa-chart-bar"></i>
+                        </div>
+                        <p class="ts-empty-title">Chưa có dữ liệu thống kê</p>
+                        <p class="ts-empty-sub">Thêm giao dịch để hệ thống tự động tổng hợp báo cáo</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======== SETTINGS ======== -->
+        <section id="tab-settings" class="tab-content">
+            <div style="max-width:520px">
+                <div class="ts-panel">
+                    <h3 class="ts-panel-title" style="margin-bottom:18px">Thông tin hệ thống</h3>
+                    <div style="display:flex;flex-direction:column;gap:14px">
+                        <div>
+                            <label class="ts-label">Tên ứng dụng</label>
+                            <input type="text" class="ts-input" value="TinyShark" />
+                        </div>
+                        <div>
+                            <label class="ts-label">Đơn vị tiền tệ mặc định</label>
+                            <select class="ts-input">
+                                <option>VND – Việt Nam Đồng</option>
+                                <option>USD – US Dollar</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="ts-label">Định dạng ngày</label>
+                            <select class="ts-input">
+                                <option>dd/MM/yyyy</option>
+                                <option>MM/dd/yyyy</option>
+                                <option>yyyy-MM-dd</option>
+                            </select>
+                        </div>
+                        <button class="ts-btn ts-btn-primary" style="width:fit-content">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @* Nội dung từ View con sẽ được render tại đây *@
+        @RenderBody()
+
+    </main>
+</div>
+
+<!-- MODAL -->
+<div id="transaction-modal" class="ts-modal-overlay">
+    <div class="ts-modal">
+        <div class="ts-modal-header">
+            <span class="ts-modal-title" id="modal-title">Thêm giao dịch mới</span>
+            <button class="ts-modal-close" onclick="closeTransactionModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="ts-modal-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <input type="hidden" id="trans-id" />
+
+                <div style="grid-column:1/-1">
+                    <label class="ts-label">Mô tả *</label>
+                    <input type="text" id="trans-desc" class="ts-input" placeholder="Ví dụ: Tiền lương tháng 6" />
+                </div>
+
+                <div>
+                    <label class="ts-label">Loại giao dịch *</label>
+                    <select id="trans-type" class="ts-input">
+                        <option value="Thu nhập">Thu nhập</option>
+                        <option value="Chi tiêu">Chi tiêu</option>
+                        <option value="Tiết kiệm">Tiết kiệm</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="ts-label">Số tiền (₫) *</label>
+                    <input type="number" id="trans-amount" class="ts-input" placeholder="0" />
+                </div>
+
+                <div>
+                    <label class="ts-label">Danh mục</label>
+                    <input type="text" id="trans-category" class="ts-input" placeholder="Sinh hoạt, Lương..." />
+                </div>
+
+                <div>
+                    <label class="ts-label">Ngày giao dịch *</label>
+                    <input type="date" id="trans-date" class="ts-input" />
+                </div>
+
+                <div style="grid-column:1/-1">
+                    <label class="ts-label">Ghi chú</label>
+                    <input type="text" id="trans-note" class="ts-input" placeholder="Tuỳ chọn" />
+                </div>
+
+                <div style="grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;padding-top:6px">
+                    <button onclick="closeTransactionModal()" class="ts-btn ts-btn-outline">Huỷ</button>
+                    <button onclick="saveTransaction()" class="ts-btn ts-btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const tabTitles = {
+        dashboard: 'Tổng quan', transactions: 'Giao dịch',
+        budgets: 'Ngân sách', users: 'Người dùng',
+        reports: 'Báo cáo', settings: 'Cài đặt'
+    };
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.sidebar-btn').forEach(el => el.classList.remove('sidebar-active'));
+        const tab = document.getElementById('tab-' + name);
+        if (tab) tab.style.display = 'block';
+        const btn = document.getElementById('btn-' + name);
+        if (btn) btn.classList.add('sidebar-active');
+        document.getElementById('page-title').textContent = tabTitles[name] || name;
+    }
+
+    function setPeriod(el, period) {
+        document.querySelectorAll('.ts-tab-pill').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function openTransactionModal(id) {
+        document.getElementById('trans-id').value = id || '';
+        document.getElementById('modal-title').textContent = id ? 'Chỉnh sửa giao dịch' : 'Thêm giao dịch mới';
+        document.getElementById('trans-date').valueAsDate = new Date();
+        document.getElementById('transaction-modal').classList.add('open');
+    }
+
+    function closeTransactionModal() {
+        document.getElementById('transaction-modal').classList.remove('open');
+    }
+
+    function saveTransaction() {
+        alert('Kết nối database để lưu giao dịch!');
+        closeTransactionModal();
+    }
+
+    document.getElementById('transaction-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeTransactionModal();
+    });
+
+    function formatVND(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function renderBudgetItem(name, used, total, color) {
+        const pct = Math.min(100, Math.round((used / total) * 100));
+        const overBudget = used > total;
+        return `
+        <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                <span style="font-size:12px;font-weight:600;color:var(--ts-text)">${name}</span>
+                <span style="font-size:11px;font-weight:600;color:${overBudget ? '#A83232' : 'var(--ts-text-muted)'}">
+                    ${pct}% ${overBudget ? '⚠ Vượt hạn mức' : ''}
+                </span>
+            </div>
+            <div class="ts-progress-track">
+                <div class="ts-progress-fill" style="width:${pct}%;background:${overBudget ? '#C43A3A' : color}"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:3px">
+                <span style="font-size:10.5px;color:var(--ts-text-muted)">${formatVND(used)}</span>
+                <span style="font-size:10.5px;color:var(--ts-text-muted)">${formatVND(total)}</span>
+            </div>
+        </div>`;
+    }
+
+    function initDashboard(data) {
+        if (!data) return;
+        document.getElementById('db-revenue').textContent     = formatVND(data.revenue || 0);
+        document.getElementById('db-expense').textContent     = formatVND(data.expense || 0);
+        document.getElementById('db-savings').textContent     = formatVND(data.savings || 0);
+        document.getElementById('db-transactions').textContent = data.transactionCount || 0;
+
+        if (data.revenueChange !== undefined) {
+            document.getElementById('db-revenue-change').innerHTML =
+                `<i class="fa-solid fa-caret-${data.revenueChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(data.revenueChange)}% so với tháng trước`;
+        }
+
+        if (data.recentTransactions?.length) {
+            document.getElementById('table-dashboard-transactions').innerHTML =
+                data.recentTransactions.map(t => `
+                <tr>
+                    <td>
+                        <div style="font-weight:600">${t.desc}</div>
+                        <div style="font-size:10.5px;color:var(--ts-text-muted)">${t.date}</div>
+                    </td>
+                    <td>${t.category || '—'}</td>
+                    <td><span class="ts-tag ${t.type === 'Thu nhập' ? 'thu' : t.type === 'Tiết kiệm' ? 'save' : 'chi'}">${t.type}</span></td>
+                    <td style="text-align:right;font-weight:700;color:${t.type === 'Chi tiêu' ? '#C43A3A' : '#1A8C4E'}">
+                        ${t.type === 'Chi tiêu' ? '-' : '+'}${formatVND(t.amount)}
+                    </td>
+                </tr>`).join('');
+        } else {
+            document.getElementById('table-dashboard-transactions').innerHTML = `
+            <tr><td colspan="4">
+                <div class="ts-empty">
+                    <div class="ts-empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <p class="ts-empty-title">Chưa có giao dịch nào</p>
+                    <p class="ts-empty-sub">Giao dịch gần đây sẽ xuất hiện tại đây</p>
+                </div>
+            </td></tr>`;
+        }
+
+        if (data.budgets?.length) {
+            document.getElementById('budget-summary').innerHTML =
+                data.budgets.map(b => renderBudgetItem(b.name, b.used, b.limit, b.color || '#12AEBE')).join('');
+        } else {
+            document.getElementById('budget-summary').innerHTML = `
+            <div class="ts-empty" style="padding:20px">
+                <div class="ts-empty-icon"><i class="fa-solid fa-wallet"></i></div>
+                <p class="ts-empty-title">Chưa có ngân sách</p>
+                <p class="ts-empty-sub">Tạo ngân sách để theo dõi chi tiêu</p>
+            </div>`;
+        }
+    }
+</script>
+
+@RenderSection("Scripts", required: false)
+
+</body>
+</html>

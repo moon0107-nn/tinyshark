@@ -1,0 +1,62 @@
+﻿@model TinyShark.Models.Transaction
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div>
+        <h2 style="font-size:18px;font-weight:700;color:var(--ts-text);margin:0">Chi tiết giao dịch</h2>
+        <p style="font-size:12.5px;color:var(--ts-text-muted);margin-top:4px">Thông tin đầy đủ của giao dịch</p>
+    </div>
+    <a asp-action="Index" class="ts-btn ts-btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+    </a>
+</div>
+
+<div class="ts-panel" style="max-width:440px">
+    <table style="width:100%;font-size:13px;margin-bottom:20px">
+        <tr>
+            <td style="color:var(--ts-text-muted);padding:8px 0;border-bottom:1px solid var(--ts-border)">
+                @Html.DisplayNameFor(model => model.Amount)
+            </td>
+            <td style="text-align:right;padding:8px 0;border-bottom:1px solid var(--ts-border);font-weight:600">
+                @Html.DisplayFor(model => model.Amount)₫
+            </td>
+        </tr>
+        <tr>
+            <td style="color:var(--ts-text-muted);padding:8px 0;border-bottom:1px solid var(--ts-border)">
+                @Html.DisplayNameFor(model => model.Description)
+            </td>
+            <td style="text-align:right;padding:8px 0;border-bottom:1px solid var(--ts-border)">
+                @Html.DisplayFor(model => model.Description)
+            </td>
+        </tr>
+        <tr>
+            <td style="color:var(--ts-text-muted);padding:8px 0;border-bottom:1px solid var(--ts-border)">
+                @Html.DisplayNameFor(model => model.Date)
+            </td>
+            <td style="text-align:right;padding:8px 0;border-bottom:1px solid var(--ts-border)">
+                @Html.DisplayFor(model => model.Date)
+            </td>
+        </tr>
+        <tr>
+            <td style="color:var(--ts-text-muted);padding:8px 0">
+                @Html.DisplayNameFor(model => model.Type)
+            </td>
+            <td style="text-align:right;padding:8px 0">
+                @{
+                    var tagClass = Model.Type == "Thu nhập" ? "thu" : Model.Type == "Tiết kiệm" ? "save" : "chi";
+                }
+                <span class="ts-tag @tagClass">@Html.DisplayFor(model => model.Type)</span>
+            </td>
+        </tr>
+    </table>
+
+    <div style="display:flex;gap:8px">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="ts-btn ts-btn-primary">
+            <i class="fa-solid fa-pen"></i> Chỉnh sửa
+        </a>
+        <a asp-action="Index" class="ts-btn ts-btn-outline">Quay lại</a>
+    </div>
+</div>
