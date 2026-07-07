@@ -1,4 +1,5 @@
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import WavyTabBar from './navbar';
 
@@ -8,9 +9,12 @@ interface OtherScreenProps {
     onNavigateToHome?: () => void;
     onNavigateToWallet?: () => void;
     onNavigateToAnalyst?: () => void;
+    onNavigateToInterface?: () => void;
+    onNavigateToSpendingLimit?: () => void;
 }
 
-export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNavigateToAnalyst }: OtherScreenProps) {
+export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNavigateToAnalyst, onNavigateToInterface, onNavigateToSpendingLimit }: OtherScreenProps) {
+    const router = useRouter();
 
     // 1. Mảng dữ liệu Tính năng
     const features = [
@@ -47,6 +51,7 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
         { id: '4', title: 'Bạn thích ứng dụng này?', icon: require('@/assets/images/otherIcons/danhgia-icon.png') },
         { id: '5', title: 'Góp ý với nhà phát triển', icon: require('@/assets/images/otherIcons/gopyvoinhaphattrien-icon.png') },
         { id: '6', title: 'Trợ giúp & thông tin', icon: require('@/assets/images/otherIcons/trogiupvathongtin-icon.png') },
+        { id: '7', title: 'Hạn mức chi', icon: require('@/assets/images/otherIcons/hanmucchi-icon.png') },
     ];
 
     return (
@@ -90,7 +95,26 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     <Text style={styles.sectionTitle}>Tính năng</Text>
                     <View style={styles.gridContainer}>
                         {features.map((item) => (
-                            <TouchableOpacity key={item.id} style={styles.gridItem} activeOpacity={0.7}>
+                            <TouchableOpacity
+                                key={item.id}
+                                style={styles.gridItem}
+                                activeOpacity={0.7}
+                                onPress={() => {
+                                    if (item.title === 'Giao diện') {
+                                        if (onNavigateToInterface) {
+                                            onNavigateToInterface();
+                                        } else {
+                                            router.push('/interface');
+                                        }
+                                    } else if (item.title === 'Hạn mức chi') {
+                                        if (onNavigateToSpendingLimit) {
+                                            onNavigateToSpendingLimit();
+                                        } else {
+                                            router.push('/spending-limit');
+                                        }
+                                    }
+                                }}
+                            >
                                 {item.imageSource ? (
                                     <Image source={item.imageSource} style={styles.iconImage} />
                                 ) : (
@@ -99,6 +123,7 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                                 <Text style={styles.gridItemText} numberOfLines={2}>{item.title}</Text>
                             </TouchableOpacity>
                         ))}
+
                     </View>
                 </View>
 
@@ -122,7 +147,28 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                 {/* Danh sách cài đặt chi tiết */}
                 <View style={styles.settingsContainer}>
                     {settingsList.map((item) => (
-                        <TouchableOpacity key={item.id} style={styles.settingRow} activeOpacity={0.7}>
+                        <TouchableOpacity
+                            key={item.id}
+                            style={styles.settingRow}
+                            activeOpacity={0.7}
+                            onPress={() => {
+                                if (item.id === '1') {
+                                    // Dùng onNavigateToInterface nếu được truyền vào,
+                                    // ngược lại fallback sang router của Expo Router
+                                    if (onNavigateToInterface) {
+                                        onNavigateToInterface();
+                                    } else {
+                                        router.push('/interface');
+                                    }
+                                } else if (item.id === '7' || item.title === 'Hạn mức chi') {
+                                    if (onNavigateToSpendingLimit) {
+                                        onNavigateToSpendingLimit();
+                                    } else {
+                                        router.push('/spending-limit');
+                                    }
+                                }
+                            }}
+                        >
                             <View style={styles.settingIconWrapper}>
                                 <Image source={item.icon} style={styles.settingIcon} />  {/* ← ĐÃ SỬA */}
                             </View>

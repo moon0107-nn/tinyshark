@@ -9,6 +9,8 @@ export default function OtherRoute() {
       onNavigateToHome={() => router.replace('/')}
       onNavigateToWallet={() => router.replace('/wallet')}
       onNavigateToAnalyst={() => router.replace('/analysis')}
+      onNavigateToInterface={() => router.push('/interface')}
+      onNavigateToSpendingLimit={() => router.push('/spending-limit')}
     />
   );
 }
