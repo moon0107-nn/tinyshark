@@ -7,9 +7,10 @@ interface WalletScreenProps {
     onNavigateToAnalysis?: () => void;
     onNavigateToOther?: () => void;
     onNavigateToHome?: () => void;
+    onNavigateToStocks?: () => void;
 }
 
-export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther, onNavigateToHome }: WalletScreenProps) {
+export default function WalletScreen({ onNavigateToFinancialManager, onNavigateToAnalysis, onNavigateToOther, onNavigateToHome, onNavigateToStocks }: WalletScreenProps) {
     return (
         <SafeAreaView style={styles.container}>
             {/* Header */}
@@ -22,6 +23,12 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                <Image
+                    source={require('@/assets/images/background-wallet.png')}
+                    style={styles.backgroundImage}
+                    resizeMode="cover"
+                />
+
                 {/* Link Bank Banner */}
                 <View style={styles.bannerContainer}>
                     <Text style={styles.bannerText}>
@@ -75,7 +82,7 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
 
                 {/* Bottom Grid Actions */}
                 <View style={styles.row}>
-                    <TouchableOpacity style={styles.smallCard}>
+                    <TouchableOpacity style={styles.smallCard} onPress={onNavigateToStocks}>
                         <MaterialCommunityIcons name="candycane" size={32} color="#fff" />
                         <Text style={styles.cardText}>Chứng khoán</Text>
                     </TouchableOpacity>
@@ -109,12 +116,19 @@ export default function WalletScreen({ onNavigateToFinancialManager, onNavigateT
             />
         </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: 1400,
+    },
     container: {
         flex: 1,
-        backgroundColor: '#d6f0f5', // Màu nền xanh nhạt
     },
     header: {
         flexDirection: 'row',

@@ -10,6 +10,7 @@ export default function WalletRoute() {
       onNavigateToAnalysis={() => router.replace('/analysis')}
       onNavigateToOther={() => router.replace('/other')}
       onNavigateToHome={() => router.replace('/')}
+      onNavigateToStocks={() => router.push('/stocks')}
     />
   );
 }
