@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { Feather as Icon, MaterialIcons as MaterialIcon } from '@expo/vector-icons';
 import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg';
-import { Feather as Icon, MaterialIcons as MaterialIcon } from '@expo/vector-icons';
 
 // Định nghĩa màu sắc từ hình ảnh
 const colors = {
@@ -128,7 +127,7 @@ const FinancialManagerScreen = ({ onBack, onNavigateToCreateWallet }: FinancialM
         {/* Shark Character */}
         <View style={styles.sharkContainer}>
           {/* Tạm thời dùng một ảnh placeholder, bạn cần thay thế bằng ảnh cá mập 3D của mình */}
-          <Image source={require('@/assets/images/shark-market.png')} style={styles.sharkImage} />
+          <Image source={require('@/assets/images/shark-market.gif')} style={styles.sharkImage} />
           <View style={styles.speechBubble}>
             <Text style={styles.speechText}>Ăn ăn ăn</Text>
           </View>

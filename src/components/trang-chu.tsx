@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image as ExpoImage, Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -125,7 +125,7 @@ export default function App() {
                         {/* Island center */}
                         <View style={styles.islandContainer}>
                             <Image
-                                source={require('@/assets/images/island1.png')}
+                                source={require('@/assets/images/islandMotion.gif')}
                                 style={styles.islandImg}
                                 contentFit="contain"
                             />
@@ -193,7 +193,7 @@ export default function App() {
                             contentFit="contain"
                         />
                         <Image
-                            source={require('@/assets/images/shark-hello.png')}
+                            source={require('@/assets/images/center-shark.gif')}
                             style={styles.sharkImageLarge}
                             contentFit="contain"
                         />
@@ -204,15 +204,15 @@ export default function App() {
                         <View style={styles.smallCard}>
                             <Text style={styles.smallCardTitle}>Tài chính thông minh</Text>
                             <Image
-                                source={require('@/assets/images/shark-coin.png')}
+                                source={require('@/assets/images/Coin.gif')}
                                 style={styles.smallCardSharkImg}
                                 contentFit="contain"
                             />
                         </View>
                         <View style={styles.smallCard}>
                             <Text style={styles.smallCardTitle}>Shark khuyên bạn</Text>
-                            <Image
-                                source={require('@/assets/images/shark-flex.png')}
+                            <ExpoImage
+                                source={require('@/assets/images/shark-flex.gif')}
                                 style={styles.smallCardSharkImg}
                                 contentFit="contain"
                             />

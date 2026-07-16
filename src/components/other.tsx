@@ -51,7 +51,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
         { id: '4', title: 'Bạn thích ứng dụng này?', icon: require('@/assets/images/otherIcons/danhgia-icon.png') },
         { id: '5', title: 'Góp ý với nhà phát triển', icon: require('@/assets/images/otherIcons/gopyvoinhaphattrien-icon.png') },
         { id: '6', title: 'Trợ giúp & thông tin', icon: require('@/assets/images/otherIcons/trogiupvathongtin-icon.png') },
-        { id: '7', title: 'Hạn mức chi', icon: require('@/assets/images/otherIcons/hanmucchi-icon.png') },
     ];
 
     return (
@@ -76,7 +75,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     </Text>
                 </TouchableOpacity>
 
-                {/* Xu và Mã chia sẻ */}
                 <View style={styles.rowInfo}>
                     <View style={styles.infoBox}>
                         <FontAwesome5 name="coins" size={16} color="#E5A93C" />
@@ -90,7 +88,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     </TouchableOpacity>
                 </View>
 
-                {/* Khối Tính Năng */}
                 <View style={styles.sectionCard}>
                     <Text style={styles.sectionTitle}>Tính năng</Text>
                     <View style={styles.gridContainer}>
@@ -105,12 +102,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                                             onNavigateToInterface();
                                         } else {
                                             router.push('/interface');
-                                        }
-                                    } else if (item.title === 'Hạn mức chi') {
-                                        if (onNavigateToSpendingLimit) {
-                                            onNavigateToSpendingLimit();
-                                        } else {
-                                            router.push('/spending-limit');
                                         }
                                     }
                                 }}
@@ -127,7 +118,6 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                     </View>
                 </View>
 
-                {/* Khối Tiện Ích */}
                 <View style={styles.sectionCard}>
                     <Text style={styles.sectionTitle}>Tiện ích</Text>
                     <View style={styles.gridContainer}>
@@ -160,17 +150,11 @@ export default function OtherScreen({ onNavigateToHome, onNavigateToWallet, onNa
                                     } else {
                                         router.push('/interface');
                                     }
-                                } else if (item.id === '7' || item.title === 'Hạn mức chi') {
-                                    if (onNavigateToSpendingLimit) {
-                                        onNavigateToSpendingLimit();
-                                    } else {
-                                        router.push('/spending-limit');
-                                    }
                                 }
                             }}
                         >
                             <View style={styles.settingIconWrapper}>
-                                <Image source={item.icon} style={styles.settingIcon} />  {/* ← ĐÃ SỬA */}
+                                <Image source={item.icon} style={styles.settingIcon} />
                             </View>
                             <View style={styles.settingTextWrapper}>
                                 <Text style={styles.settingTitleText}>{item.title}</Text>

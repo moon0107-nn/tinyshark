@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TinyShark")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+deadc5be230a03d1fdbfbe916ababb56a86cce29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d12eab79c0ad68901bc607d763ab5125b97ac09a")]
 [assembly: System.Reflection.AssemblyProductAttribute("TinyShark")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TinyShark")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

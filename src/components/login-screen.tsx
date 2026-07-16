@@ -1,6 +1,7 @@
 import { FontAwesome6 } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -163,7 +164,7 @@ export function LoginScreen({ onLogin }: Props) {
   }, []);
 
   const sharkAnim = useAnimatedStyle(() => ({
-    transform: [{ translateY: sharkBob.value }],
+    transform: [{ translateY: sharkBob.value - 24 }],
   }));
 
   const cardAnim = useAnimatedStyle(() => ({
@@ -274,7 +275,11 @@ export function LoginScreen({ onLogin }: Props) {
       </Animated.View>
 
       {/* ⑥  Glassmorphism card — animated height */}
-      <Animated.View style={[styles.card, cardAnim]}>
+      <Animated.View style={[styles.card, cardAnim, step === 'welcome' && { overflow: 'visible' }]}>
+        <LinearGradient
+          colors={['rgba(18, 174, 190, 0.85)', 'rgba(9, 74, 88, 0.92)', 'rgba(5, 32, 44, 0.98)']}
+          style={StyleSheet.absoluteFill}
+        />
 
         {/* Back Button chevron to return to Welcome */}
         {step !== 'welcome' && (
@@ -289,26 +294,29 @@ export function LoginScreen({ onLogin }: Props) {
 
         {/* ────── WELCOME ────── */}
         {step === 'welcome' && (
-          <View style={styles.inner}>
-            {/* shark2.png: cartoon shark wearing glasses */}
-            <Image
-              source={require('@/assets/images/shark2.png')}
-              style={styles.welcomeSharkImg}
-              contentFit="contain"
-            />
+          <View style={styles.welcomeSharkWrap}>
+            <View style={styles.welcomeSharkBg}>
+              <View style={styles.welcomeSharkMask}>
+                <Image
+                  source={require('@/assets/images/shark-flex.gif')}
+                  style={styles.welcomeSharkImg}
+                  contentFit="contain"
+                />
+              </View>
+            </View>
 
             {/* solid cyan button "Đăng nhập" */}
             <Pressable
-              style={({ pressed }) => [styles.btnCyan, pressed && styles.pressed]}
-              onPress={() => go('login')}
+              style={({ pressed }) => [styles.btnCyan, styles.welcomeBtn, pressed && styles.pressed]}
+              onPress={onLogin}
             >
               <Text style={styles.btnCyanTxt}>Đăng nhập</Text>
             </Pressable>
 
             {/* outline cyan button "Đăng kí" */}
             <Pressable
-              style={({ pressed }) => [styles.btnOutline, pressed && styles.pressed]}
-              onPress={() => go('register')}
+              style={({ pressed }) => [styles.btnOutline, styles.welcomeBtn, pressed && styles.pressed]}
+              onPress={onLogin}
             >
               <Text style={styles.btnOutlineTxt}>Đăng kí</Text>
             </Pressable>
@@ -316,6 +324,7 @@ export function LoginScreen({ onLogin }: Props) {
             {/* underlined text "cần hỗ trợ" */}
             <Pressable style={styles.supportWrap}>
               <Text style={styles.supportTxt}>cần hỗ trợ</Text>
+              <View style={styles.supportLine} />
             </Pressable>
           </View>
         )}
@@ -553,11 +562,43 @@ const styles = StyleSheet.create({
     height: CARD_TOP_LOGIN * 0.85,
     zIndex: 2,
   },
+  welcomeSharkWrap: {
+    position: 'absolute',
+    top: 24,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    zIndex: 25,
+  },
+  welcomeSharkBg: {
+    width: 135,
+    height: 135,
+    borderRadius: 12,
+    backgroundColor: 'rgba(94, 195, 181, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'visible',
+    marginBottom: 75,
+  },
+  welcomeSharkMask: {
+    position: 'absolute',
+    bottom: 0,
+    left: -102.5,
+    width: 340,
+    height: 238,
+    overflow: 'hidden',
+  },
   welcomeSharkImg: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-    marginTop: 6,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 340,
+    height: 340,
+  },
+  welcomeBtn: {
+    width: 260,
+    marginBottom: 16,
   },
   btnOutline: {
     width: '100%',
@@ -582,9 +623,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   supportTxt: {
-    color: 'rgba(255,255,255,0.46)',
-    fontSize: 13,
-    textDecorationLine: 'underline',
+    color: 'rgba(255,255,255,0.52)',
+    fontSize: 12,
+  },
+  supportLine: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.45)',
+    marginTop: 2,
   },
   backBtn: {
     position: 'absolute',

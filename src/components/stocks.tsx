@@ -165,6 +165,42 @@ const CandlestickMiniChart = () => {
     );
 };
 
+const SortIcon = ({ color = '#000' }: { color?: string }) => (
+    <View style={styles.sortIconWrap}>
+        <Ionicons name="caret-up" size={8} color={color} style={styles.sortIconUp} />
+        <Ionicons name="caret-down" size={8} color={color} />
+    </View>
+);
+
+const HeaderLabel = ({
+    label,
+    align = 'left',
+    underline = false,
+}: {
+    label: string;
+    align?: 'left' | 'right';
+    underline?: boolean;
+}) => (
+    <View
+        style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
+        }}
+    >
+        <Text
+            style={[
+                styles.thLabel,
+                align === 'right' && { textAlign: 'right' },
+                underline && styles.thLabelUnderline,
+            ]}
+        >
+            {label}
+        </Text>
+        <SortIcon />
+    </View>
+);
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function StocksScreen() {
     const router = useRouter();
@@ -263,7 +299,7 @@ export default function StocksScreen() {
         return renderFavRow({ item });
     };
 
-    const PaginationSimple = () => (
+    const renderPaginationSimple = () => (
         <View style={styles.pagination}>
             <TouchableOpacity style={styles.pageArrow} onPress={() => setActivePage(p => Math.max(1, p - 1))}>
                 <Ionicons name="chevron-back" size={14} color="#555" />
@@ -277,7 +313,7 @@ export default function StocksScreen() {
         </View>
     );
 
-    const PaginationFull = () => {
+    const renderPaginationFull = () => {
         const pages = [1, 2, 3, 4, 5];
         return (
             <View style={styles.pagination}>
@@ -307,7 +343,7 @@ export default function StocksScreen() {
         );
     };
 
-    const TabBtn = ({ id, label }: { id: string; label: string }) => (
+    const renderTabBtn = (id: string, label: string) => (
         <TouchableOpacity
             onPress={() => { setActiveTab(id); setActivePage(1); }}
             style={styles.tabItem}
@@ -318,43 +354,7 @@ export default function StocksScreen() {
         </TouchableOpacity>
     );
 
-    const SortIcon = ({ color = '#000' }: { color?: string }) => (
-        <View style={styles.sortIconWrap}>
-            <Ionicons name="caret-up" size={8} color={color} style={styles.sortIconUp} />
-            <Ionicons name="caret-down" size={8} color={color} />
-        </View>
-    );
-
-    const HeaderLabel = ({
-        label,
-        align = 'left',
-        underline = false,
-    }: {
-        label: string;
-        align?: 'left' | 'right';
-        underline?: boolean;
-    }) => (
-        <View
-            style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
-            }}
-        >
-            <Text
-                style={[
-                    styles.thLabel,
-                    align === 'right' && { textAlign: 'right' },
-                    underline && styles.thLabelUnderline,
-                ]}
-            >
-                {label}
-            </Text>
-            <SortIcon />
-        </View>
-    );
-
-    const TableHeader = () => {
+    const renderTableHeader = () => {
         if (activeTab === 'fav') {
             return (
                 <View style={[styles.tableHeader, styles.tableHeaderFav]}>
@@ -374,7 +374,7 @@ export default function StocksScreen() {
             <View style={[styles.tableHeader, styles.tableHeaderCrypto]}>
                 <View style={styles.cryptoColName}>
                     <HeaderLabel label="Tên" underline />
-                </View>
+                  </View>
                 <View style={styles.cryptoColRight}>
                     <HeaderLabel label="Giá/Thay đổi" align="right" />
                 </View>
@@ -382,7 +382,7 @@ export default function StocksScreen() {
         );
     };
 
-    const GoldSection = () => {
+    const renderGoldSection = () => {
         const getGoldData = () => {
             if (goldSubTab === 'gold') return GOLD_METALS;
             if (goldSubTab === 'silver') return SILVER_METALS;
@@ -445,7 +445,7 @@ export default function StocksScreen() {
         );
     };
 
-    const EstateSection = () => {
+    const renderEstateSection = () => {
         const renderEstateCard = ({ item }: { item: EstateAsset }) => {
             return (
                 <View style={styles.estateCard}>
@@ -546,11 +546,11 @@ export default function StocksScreen() {
                 {/* Tabs */}
                 <View style={styles.tabsRow}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
-                        <TabBtn id="fav" label="Yêu thích" />
-                        <TabBtn id="crypto" label="Tiền mã hóa" />
-                        <TabBtn id="gold" label="Vàng" />
-                        <TabBtn id="estate" label="Nhà đất" />
-                        <TabBtn id="other" label="Cổ phiếu" />
+                        {renderTabBtn("fav", "Yêu thích")}
+                        {renderTabBtn("crypto", "Tiền mã hóa")}
+                        {renderTabBtn("gold", "Vàng")}
+                        {renderTabBtn("estate", "Nhà đất")}
+                        {renderTabBtn("other", "Cổ phiếu")}
                     </ScrollView>
                     <TouchableOpacity style={styles.menuBtn}>
                         <View style={styles.menuLine} />
@@ -577,12 +577,12 @@ export default function StocksScreen() {
                     </TouchableOpacity>
                 )}
 
-                {activeTab !== 'gold' && activeTab !== 'estate' && <TableHeader />}
+                {activeTab !== 'gold' && activeTab !== 'estate' && renderTableHeader()}
 
                 {activeTab === 'gold' ? (
-                    <GoldSection />
+                    renderGoldSection()
                 ) : activeTab === 'estate' ? (
-                    <EstateSection />
+                    renderEstateSection()
                 ) : (
                     <FlatList
                         data={data}
@@ -591,7 +591,7 @@ export default function StocksScreen() {
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{ paddingBottom: 130 }}
                         ListFooterComponent={
-                            activeTab === 'fav' ? <PaginationSimple /> : <PaginationFull />
+                            activeTab === 'fav' ? renderPaginationSimple() : renderPaginationFull()
                         }
                     />
                 )}
